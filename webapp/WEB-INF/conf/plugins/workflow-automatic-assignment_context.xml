@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+ 	<bean id="taskAutomaticAssignmentConfigDAO"  class="fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.business.TaskAutomaticAssignmentConfigDAO"/>
+ 	<bean id="automaticAssignmentDAO"  class="fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.business.AutomaticAssignmentDAO"/>
+	
+	<bean id="workflow-automatic-assignment.taskAutomaticAssignment" class="fr.paris.lutece.plugins.workflow.business.task.TaskType" >
+			<property name="key" value="taskAutomaticAssignment"/>
+     		 <property name="titleI18nKey" value="module.workflow.taskautomaticassignment.task_title" />
+    		 <property name="className" value="fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.business.TaskAutomaticAssignment"/>
+   	  </bean>
+ </beans>
+ 
+ 	

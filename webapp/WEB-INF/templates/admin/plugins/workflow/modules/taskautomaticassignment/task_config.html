@@ -1,0 +1,169 @@
+
+<div>
+  <h2> #i18n{module.workflow.taskautomaticassignment.task_config.title}</h2> 	
+	  	<p>
+	    	<label for="title">#i18n{module.workflow.taskautomaticassignment.task_config.label_title} * :</label>
+	    		<#if config?exists && config.title??>
+		     			  <input type="text" name="title" id="" size="80" value="${config.title}"  maxlength="255"/>
+		     	<#else>
+		     			<input type="text" name="title" id="" size="80" value=""  maxlength="255"/>
+		     	</#if>	
+		    <br/>
+			<label>&nbsp;</label>
+			#i18n{module.workflow.taskautomaticassignment.task_config.label_title}
+		</p>
+		
+		<p>
+			 <label for="directory">#i18n{module.workflow.taskautomaticassignment.task_config.label_directory} :</label>
+   		 		<@combo 'directory' config.idDirectory directory_list />
+   		 		<input class="button" type="submit" name="apply" value="#i18n{module.workflow.taskautomaticassignment.task_config.update_button}" />	
+   				<br/>
+ 			 <label>&nbsp;</label> #i18n{module.workflow.taskautomaticassignment.task_config.label_directory_comment}
+	 	</p>
+	 	<#if config??>	
+	 		<#if config.entryList??>
+	 			<div class="highlight-box">
+	 				<h2>#i18n{module.workflow.taskautomaticassignment.task_config.entry_list.title}</h2>
+	 				<#if config.entryList?size = 0>
+	 					#i18n{module.workflow.taskautomaticassignment.task_config.entry_list.label.noentry}
+	 				<#else>	 				
+		 				<table>
+							<tr>
+								<th>#i18n{module.workflow.taskautomaticassignment.task_config.label.entry}</th>						
+								<th>#i18n{module.workflow.taskautomaticassignment.task_config.label.actions}</th>
+							</tr>
+			 				<#list config.entryList as entry>
+							 	<tr>
+							 		<td>${entry.title}</td>							 		
+							 		<td>	
+							 			<a href="jsp/admin/plugins/workflow/modules/taskautomaticassignment/ModifyEntryAssignment.jsp?id_task=${config.idTask}&id_entry=${entry.idEntry}" > 
+							 				<img src="images/admin/skin/actions/modify.png" class="icon" alt="" title="" /> 
+							 			</a>
+							 		</td>
+						 		</tr>
+						 	</#list>						 	
+					 	</table>
+					</#if>		
+				 	<br />	<br />				 			
+			 	</div>		 
+		 	</#if>
+	 	</#if>	 	
+	 	<p>
+	 		<label for="is_notify">#i18n{module.workflow.taskautomaticassignment.task_config.label_notification} :</label>
+	 		<#if config?exists && config.notify>
+	 			<input type="checkbox" name="is_notify" value="1" checked="checked" onclick="javascript:notification();" />
+   		 	<#else>
+   		 		<input type="checkbox" name="is_notify" value="1" onclick="javascript:notification();" />
+   		 	</#if>
+   			<br />
+		</p>
+		<div id="notification">
+			<#if full_entry_list??>
+		 		<div class="highlight-box">
+		 			<h2>#i18n{module.workflow.taskautomaticassignment.task_config.full_entry_list.title}</h2>
+		 			<#if full_entry_list?size = 0>
+		 					#i18n{module.workflow.taskautomaticassignment.task_config.entry_list.label.noentry}
+		 				<#else>	 				
+			 				<table>
+								<tr>
+									<th>#i18n{module.workflow.taskautomaticassignment.task_config.label.entry}</th>						
+									<th>#i18n{module.workflow.taskautomaticassignment.task_config.label.freemarker}</th>
+									
+								</tr>
+				 				<#list full_entry_list as entry>
+				 					<#if entry?? && entry.title??>
+									 	<tr>
+									 		<td>${entry.title}</td>
+									 		<td>&#36;&#123;entry_${entry.idEntry}&#125;</td>							 		
+								 		</tr>
+							 		</#if>
+							 	</#list>						 	
+						 	</table>
+						</#if>		
+					 	<br />	<br />	
+		 		</div>
+		 	</#if>
+		 	<p>
+				 <label for="sender_name">#i18n{module.workflow.taskautomaticassignment.task_config.label_user_name} * :</label>
+	   		 		<#if config?exists&&config.senderName?exists>
+	   		 			<input type="text" name="sender_name" id="" size="80" value="${config.senderName}" maxlength="255" />
+	   		 		<#else>
+	   		 			<input type="text" name="sender_name" id="" size="80" value="" maxlength="255" />
+	   		 		</#if>
+	   				<br/>
+	   				 <label>&nbsp;</label>
+				#i18n{module.workflow.taskautomaticassignment.task_config.label_user_name_comment}
+		 	</p>
+		 	<p>
+		    	<label for="suject">#i18n{module.workflow.taskassignment.task_assignment_config.label_subject} * :</label>
+			    	<#if config?exists&&config.subject?exists>
+			     			<input type="text" name="subject" id="" size="80" value="${config.subject}"  maxlength="255"/>
+			     	<#else>
+			     			<input type="text" name="subject" id="" size="80" value=""  maxlength="255"/>
+			     	</#if>		
+				   <br/>
+				  <label>&nbsp;</label>
+				#i18n{module.workflow.taskassignment.task_assignment_config.label_subject_comment}
+			</p>
+		 	<p>
+		    	<label for="message">#i18n{module.workflow.taskassignment.task_assignment_config.label_message} * :</label>
+			    	<#if config?exists&&config.message?exists>
+			     			<textarea name="message" id="" rows="5" cols="80">${config.message}</textarea>
+			     	<#else>
+			     			<textarea name="message" id="" rows="5" cols="80"></textarea>
+			     	</#if>		
+				   <br/>
+				  <label>&nbsp;</label>
+				#i18n{module.workflow.taskassignment.task_assignment_config.label_message_comment}
+			</p>	
+			<#list workgroup_list as workgroup>
+		    	<p>
+		    		<label for="">&nbsp;</label>
+					<div style="float:left;">
+						<input type="checkbox" class="checkbox" name="workgroups" value="${workgroup.item.key}"
+							<#if workgroup.config?exists> checked="checked" </#if> />
+						${workgroup.item.description}
+					</div>
+					<div id="div_${workgroup.item.key}" style="padding-top:3px;">
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						#i18n{module.workflow.taskassignment.task_assignment_config.label_notification} :
+						<#if workgroup.config?exists>
+							<@combo name="id_mailing_list_${workgroup.item.key}" items=mailing_list default_value=workgroup.config.idMailingList />
+						<#else>
+							<@combo name="id_mailing_list_${workgroup.item.key}" items=mailing_list default_value="-1" />
+						</#if>
+					</div>
+					<br />
+	   			</p>
+	   		</#list>
+		</div>
+	 
+</div>
+<script type="text/javascript" charset="utf-8">
+	function notification()
+	{
+		var notif = document.getElementsByName("is_notify");
+
+		if(notif[0].checked)
+		{
+			document.getElementById("notification").style.display = "block";
+			<#-- <#list workgroup_list as workgroup>
+				if(document.getElementById("div_${workgroup.item.code}"))
+				{
+					document.getElementById("div_${workgroup.item.code}").style.display = "block";
+				}
+			</#list> -->
+		}
+		else
+		{
+			document.getElementById("notification").style.display = "none";
+			<#-- <#list workgroup_list as workgroup>
+				if(document.getElementById("div_${workgroup.item.code}"))
+				{
+					document.getElementById("div_${workgroup.item.code}").style.display = "none";
+				}
+			</#list> -->
+		}
+	}
+	notification();
+</script>
