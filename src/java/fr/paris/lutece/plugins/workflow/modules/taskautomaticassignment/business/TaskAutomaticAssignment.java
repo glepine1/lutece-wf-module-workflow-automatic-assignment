@@ -517,50 +517,43 @@ public class TaskAutomaticAssignment extends Task
                 if ( ( workgroupConfig != null ) &&
                         ( workgroupConfig.getIdMailingList(  ) != WorkflowUtils.CONSTANT_ID_NULL ) )
                 {
-                    try
+                    Collection<Recipient> listRecipients = new ArrayList<Recipient>(  );
+                    listRecipients = AdminMailingListService.getRecipients( workgroupConfig.getIdMailingList(  ) );
+
+                    String strSenderEmail = MailService.getNoReplyEmail(  );
+                    
+                    model.put( MARK_MESSAGE, config.getMessage(  ) );
+
+                    HtmlTemplate t = AppTemplateService.getTemplate( 
+                    				TEMPLATE_TASK_NOTIFICATION_MAIL, locale, model ) ;
+                    
+                    String strSubject = config.getSubject(  );
+                    
+                    for( Entry<String, Object> entryModel : model.entrySet(  ) )
                     {
-                        Collection<Recipient> listRecipients = new ArrayList<Recipient>(  );
-                        listRecipients = AdminMailingListService.getRecipients( workgroupConfig.getIdMailingList(  ) );
-
-                        String strSenderEmail = MailService.getNoReplyEmail(  );
-                        
-                        model.put( MARK_MESSAGE, config.getMessage(  ) );
-
-                        HtmlTemplate t = AppTemplateService.getTemplate( 
-                        				TEMPLATE_TASK_NOTIFICATION_MAIL, locale, model ) ;
-                        
-                        String strSubject = config.getSubject(  );
-                        
-                        for( Entry<String, Object> entryModel : model.entrySet(  ) )
-                        {
-                        	String strCurrentFreemarker = CONSTANT_FREEMARKER_BEGIN + entryModel.getKey(  ) + CONSTANT_FREEMARKER_END;
-                        	
-                        	//substitute freemarkers in the message
-                        	t.substitute( strCurrentFreemarker, entryModel.getValue(  ).toString(  ) );
-                        	
-                        	//substitute freemarkers in the subject
-                        	strSubject = strSubject.replaceAll( CONSTANT_FREEMARKER_REGEXP_BEGIN
-                        			+ entryModel.getKey(  ) +  CONSTANT_FREEMARKER_REGEXP_END, entryModel.getValue(  ).toString(  ) );
-                        	
-                        }
-                        
-                        String strSenderName = config.getSenderName(  );
-                        if( strSenderName == null )
-                        {
-                        	strSenderName = I18nService.getLocalizedString( PROPERTY_MAIL_SENDER_NAME, locale );
-                        }             
-
-                        // Send Mail
-                        for ( Recipient recipient : listRecipients )
-                        {
-                            // Build the mail message
-                            MailService.sendMailHtml( recipient.getEmail(  ), strSenderName, strSenderEmail,
-                            		strSubject, t.getHtml(  ) );
-                        }
+                    	String strCurrentFreemarker = CONSTANT_FREEMARKER_BEGIN + entryModel.getKey(  ) + CONSTANT_FREEMARKER_END;
+                    	
+                    	//substitute freemarkers in the message
+                    	t.substitute( strCurrentFreemarker, entryModel.getValue(  ).toString(  ) );
+                    	
+                    	//substitute freemarkers in the subject
+                    	strSubject = strSubject.replaceAll( CONSTANT_FREEMARKER_REGEXP_BEGIN
+                    			+ entryModel.getKey(  ) +  CONSTANT_FREEMARKER_REGEXP_END, entryModel.getValue(  ).toString(  ) );
+                    	
                     }
-                    catch ( Exception e )
+                    
+                    String strSenderName = config.getSenderName(  );
+                    if( strSenderName == null )
                     {
-                        AppLogService.error( "Error during notification: " + e.getMessage(  ) );
+                    	strSenderName = I18nService.getLocalizedString( PROPERTY_MAIL_SENDER_NAME, locale );
+                    }             
+
+                    // Send Mail
+                    for ( Recipient recipient : listRecipients )
+                    {
+                        // Build the mail message
+                        MailService.sendMailHtml( recipient.getEmail(  ), strSenderName, strSenderEmail,
+                        		strSubject, t.getHtml(  ) );
                     }
                 }
             }
