@@ -47,7 +47,6 @@ import fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.service.
 import fr.paris.lutece.plugins.workflow.service.WorkflowPlugin;
 import fr.paris.lutece.portal.business.workgroup.AdminWorkgroup;
 import fr.paris.lutece.portal.business.workgroup.AdminWorkgroupHome;
-import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -64,12 +63,16 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 
+/**
+ *
+ * AutomaticAssignmentJspBean
+ *
+ */
 public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
 {
     private static final String TEMPLATE_MODIFY_ENTRY_ASSIGNMENT = "admin/plugins/workflow/modules/taskautomaticassignment/modify_entry_assignment.html";
     private static final String JSP_MODIFY_TASK = "jsp/admin/plugins/workflow/ModifyTask.jsp";
     private static final String JSP_MODIFY_ENTRY_ASSIGNMENT = "jsp/admin/plugins/workflow/modules/taskautomaticassignment/ModifyEntryAssignment.jsp";
-    
     private static final String PROPERTY_MODIFY_TASK_PAGE_TITLE = "workflow.modify_workflow.page_title";
     private static final String PARAMETER_ID_TASK = "id_task";
     private static final String PARAMETER_ID_ENTRY = "id_entry";
@@ -79,20 +82,16 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
     private static final String PARAMETER_WORKGROUP = "workgroup";
     private static final String PARAMETER_VALUE = "value";
     private static final String PARAMETER_ASSIGNMENT_LIST = "assignment_list";
-    private static final String PARAMETER_ID_DIRECTORY = "id_directory"; 
-    
+    private static final String PARAMETER_ID_DIRECTORY = "id_directory";
     private static final String MESSAGE_ALREADY_EXIST = "module.workflow.taskautomaticassignment.message.modify_entry_assignment.already_exist";
     private static final String MESSAGE_ERROR_MISSING_FIELD = "module.workflow.taskautomaticassignment.message.missing_field";
-    
 
     /**
      * Get the modify entry assignment page which allow the user to assign a workgroup to a field
      * @param request the request
      * @return the page
-     * @throws AccessDeniedException
      */
     public String getModifyEntryAssignments( HttpServletRequest request )
-        throws AccessDeniedException
     {
         String strIdTask = request.getParameter( PARAMETER_ID_TASK );
         String strIdEntry = request.getParameter( PARAMETER_ID_ENTRY );
@@ -116,7 +115,7 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
 
         assignmentList = AutomaticAssignmentHome.findByTaskByEntry( nIdTask, nIdEntry, autoAssignPlugin );
         setAssignmentValues( assignmentList, directoryPlugin );
-        
+
         IEntry entry = EntryHome.findByPrimaryKey( nIdEntry, directoryPlugin );
 
         model.put( PARAMETER_ENTRY, entry );
@@ -135,10 +134,10 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
     }
 
     /**
-     * Fill a list of assignment with workgroupdescription 
+     * Fill a list of assignment with workgroupdescription
      * and field value for displaying purpose
-     * @param assignmentList a list of AutomaticAssignment 
-     * @param directoryPlugin
+     * @param assignmentList a list of AutomaticAssignment
+     * @param directoryPlugin the directory plugin
      */
     private void setAssignmentValues( List<AutomaticAssignment> assignmentList, Plugin directoryPlugin )
     {
@@ -188,13 +187,12 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
             nIdField = Integer.parseInt( strValue );
         }
 
-        if( strValue == null || strWorkgroup == null )
-        {        	
-        	return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_MISSING_FIELD,
-        			AdminMessage.TYPE_STOP );
+        if ( ( strValue == null ) || ( strWorkgroup == null ) )
+        {
+            return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_MISSING_FIELD, AdminMessage.TYPE_STOP );
         }
-        
-        Entry entry = new Entry(  );
+
+        IEntry entry = new Entry(  );
         entry.setIdEntry( nIdEntry );
 
         AutomaticAssignment assign = new AutomaticAssignment(  );
@@ -221,7 +219,7 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
     }
 
     /**
-     * Delete an assignment 
+     * Delete an assignment
      * @param request the request
      * @return the modify assignment page url
      */
@@ -270,7 +268,7 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
             nIdField = Integer.parseInt( strValue );
         }
 
-        Entry entry = new Entry(  );
+        IEntry entry = new Entry(  );
         entry.setIdEntry( nIdEntry );
 
         AutomaticAssignment assign = new AutomaticAssignment(  );
@@ -307,7 +305,7 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
         }
 
         TaskAutomaticAssignmentConfig config = TaskAutomaticAssignmentConfigHome.findByPrimaryKey( nIdTask,
-                autoAssignPlugin,workflowPlugin );
+                autoAssignPlugin, workflowPlugin );
         config.setIdDirectory( nIdDirectory );
 
         if ( nIdDirectory != -1 )

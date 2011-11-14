@@ -41,13 +41,13 @@ import java.util.List;
 
 /**
  *
- *TaskCommentConfig
+ * TaskAutomaticAssignmentConfig
  *
  */
 public class TaskAutomaticAssignmentConfig
 {
     private int _nIdDirectory;
-    private List<IEntry> _entryList;    
+    private List<IEntry> _entryList;
     private String _strMessage;
     private boolean _bNotify;
     private String _strSubject;
@@ -55,9 +55,11 @@ public class TaskAutomaticAssignmentConfig
     private String _strTitle;
     private String _strSenderName;
     private List<WorkgroupConfig> _workgroups;
-    
+    private boolean _bViewRecord;
+    private String _strLabelLinkViewRecord;
+
     /**
-     *
+     * Get the id task
      * @return the task id
      */
     public int getIdTask(  )
@@ -66,16 +68,16 @@ public class TaskAutomaticAssignmentConfig
     }
 
     /**
-     *
-     * @param idTask the task id
+     * Set the id task
+     * @param nIdTask the task id
      */
-    public void setIdTask( int idTask )
+    public void setIdTask( int nIdTask )
     {
-        _nIdTask = idTask;
+        _nIdTask = nIdTask;
     }
 
     /**
-     *
+     * Get the id directory
      * @return the directory id
      */
     public int getIdDirectory(  )
@@ -84,34 +86,34 @@ public class TaskAutomaticAssignmentConfig
     }
 
     /**
-     * 
+     * Set the id directory
      * @param nIdDirectory the id of the directory to set
      */
     public void setIdDirectory( int nIdDirectory )
     {
         _nIdDirectory = nIdDirectory;
     }
-    
+
     /**
-     *
+     * Get the title
      * @return the title of the field insert in tasks form
      */
     public String getTitle(  )
     {
-    	return _strTitle;
+        return _strTitle;
     }
 
     /**
-     * set  the title of the field insert in tasks form
-     * @param title the title of the field insert in tasks form
+     * Set  the title of the field insert in tasks form
+     * @param strTitle the title of the field insert in tasks form
      */
-    public void setTitle( String title )
+    public void setTitle( String strTitle )
     {
-    	_strTitle = title;
+        _strTitle = strTitle;
     }
 
     /**
-     *
+     * Get the list of entries
      * @return the entry list
      */
     public List<IEntry> getEntryList(  )
@@ -120,7 +122,7 @@ public class TaskAutomaticAssignmentConfig
     }
 
     /**
-     * 
+     * Set the list of entries
      * @param entryList the list of entry to set
      */
     public void setEntryList( List<IEntry> entryList )
@@ -128,9 +130,9 @@ public class TaskAutomaticAssignmentConfig
         _entryList = entryList;
     }
 
-
     /**
-     * @return the Notification
+     * Check if the task must notify or not
+     * @return true if it must notify, false otherwise
      */
     public boolean isNotify(  )
     {
@@ -138,7 +140,8 @@ public class TaskAutomaticAssignmentConfig
     }
 
     /**
-     * @param notification the Notification to set
+     * Set true if it must notify, false otherwise
+     * @param notify true if it must notify, false otherwise
      */
     public void setNotify( boolean notify )
     {
@@ -146,7 +149,8 @@ public class TaskAutomaticAssignmentConfig
     }
 
     /**
-     * @return the strMessage
+     * Get the message
+     * @return the message
      */
     public String getMessage(  )
     {
@@ -154,15 +158,17 @@ public class TaskAutomaticAssignmentConfig
     }
 
     /**
-     * @param message the message of the notification to set
+     * Set the message
+     * @param strMessage the message of the notification to set
      */
-    public void setMessage( String message )
+    public void setMessage( String strMessage )
     {
-        _strMessage = message;
+        _strMessage = strMessage;
     }
 
     /**
-     * @return the strSubject
+     * Get the subject
+     * @return the subject
      */
     public String getSubject(  )
     {
@@ -170,44 +176,83 @@ public class TaskAutomaticAssignmentConfig
     }
 
     /**
-     * @param subject the subject of notification to set
+     * Set the subject
+     * @param strSubject the subject of notification to set
      */
-    public void setSubject( String subject )
+    public void setSubject( String strSubject )
     {
-        _strSubject = subject;
+        _strSubject = strSubject;
     }
-    
+
     /**
+     * Get the sender name
      * @return the sender name
      */
     public String getSenderName(  )
     {
-    	return _strSenderName;
+        return _strSenderName;
     }
 
     /**
+     * Set the sender name
      * @param strSenderName the sender name to set
      */
     public void setSenderName( String strSenderName )
     {
-    	_strSenderName = strSenderName;
+        _strSenderName = strSenderName;
     }
-    
+
     /**
-    *
-    * @return a list wich contains the differents workgroups to displayed in task form
-    */
+     * Get the list of workgroup config
+     * @return a list wich contains the differents workgroups to displayed in task form
+     */
     public List<WorkgroupConfig> getWorkgroups(  )
     {
         return _workgroups;
     }
 
     /**
-     * set a list wich contains the differents workgroups to displayed in task form
+     * Set a list wich contains the differents workgroups to displayed in task form
      * @param worgroups the list of workgroups
      */
     public void setWorkgroups( List<WorkgroupConfig> worgroups )
     {
         _workgroups = worgroups;
+    }
+
+    /**
+     * Set the link view record
+     * @param bViewRecord true if the email should include the link view record
+     */
+    public void setViewRecord( boolean bViewRecord )
+    {
+        _bViewRecord = bViewRecord;
+    }
+
+    /**
+     * Check if the email should include the link view record
+     * @return true if the email should include the link view record
+     */
+    public boolean isViewRecord(  )
+    {
+        return _bViewRecord;
+    }
+
+    /**
+     * Set the label for the link view record
+     * @param strLabelLinkViewRecord the label
+     */
+    public void setLabelLinkViewRecord( String strLabelLinkViewRecord )
+    {
+        _strLabelLinkViewRecord = strLabelLinkViewRecord;
+    }
+
+    /**
+     * Get the label for the link view record
+     * @return the label for the link view record
+     */
+    public String getLabelLinkViewRecord(  )
+    {
+        return _strLabelLinkViewRecord;
     }
 }

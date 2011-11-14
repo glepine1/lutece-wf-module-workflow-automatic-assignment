@@ -33,17 +33,17 @@
  */
 package fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.business;
 
-import java.util.List;
-
 import fr.paris.lutece.plugins.workflow.modules.taskassignment.business.WorkgroupConfig;
 import fr.paris.lutece.plugins.workflow.modules.taskassignment.business.WorkgroupConfigHome;
 import fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.service.AutomaticAssignmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
+import java.util.List;
+
 
 /**
- * This class provides instances management methods (create, find, ...) for TaskAssignmentConfig objects
+ * This class provides instances management methods (create, find, ...) for TaskAutomaticAssignmentConfigHome objects
  */
 public final class TaskAutomaticAssignmentConfigHome
 {
@@ -60,15 +60,14 @@ public final class TaskAutomaticAssignmentConfigHome
 
     /**
      * Creation of an instance of config
-     *
      * @param config The instance of task which contains the informations to store
-     * @param plugin the plugin
-     *
+     * @param autoAssignmentPlugin the auto assignment plugin
+     * @param workflowPlugin the workflow plugin
      */
     public static void create( TaskAutomaticAssignmentConfig config, Plugin autoAssignmentPlugin, Plugin workflowPlugin )
     {
         _dao.insert( config, autoAssignmentPlugin );
-        
+
         List<WorkgroupConfig> listWorkgroups = config.getWorkgroups(  );
 
         if ( listWorkgroups != null )
@@ -82,15 +81,14 @@ public final class TaskAutomaticAssignmentConfigHome
 
     /**
      * Update of task which is specified in parameter
-     *
      * @param  config The instance of config which contains the informations to update
-     * @param plugin the Plugin
-     *
+     * @param autoAssignmentPlugin the auto assignment plugin
+     * @param workflowPlugin the workflow plugin
      */
-    public static void update( TaskAutomaticAssignmentConfig config, Plugin autoAssignmentPlugin, Plugin workflowPlugin)
+    public static void update( TaskAutomaticAssignmentConfig config, Plugin autoAssignmentPlugin, Plugin workflowPlugin )
     {
         _dao.store( config, autoAssignmentPlugin );
-        
+
         //update workgroups
         WorkgroupConfigHome.removeByTask( config.getIdTask(  ), workflowPlugin );
 
@@ -109,12 +107,12 @@ public final class TaskAutomaticAssignmentConfigHome
      *  remove config associated to the task which is specified in parameter
      *
      * @param nIdTask The task key
-     * @param plugin the Plugin
-     *
+     * @param autoAssignmentPlugin the auto assignment plugin
+     * @param workflowPlugin the workflow plugin
      */
     public static void remove( int nIdTask, Plugin autoAssignmentPlugin, Plugin workflowPlugin )
     {
-    	 WorkgroupConfigHome.removeByTask( nIdTask, workflowPlugin );
+        WorkgroupConfigHome.removeByTask( nIdTask, workflowPlugin );
         _dao.delete( nIdTask, autoAssignmentPlugin );
     }
 
@@ -122,15 +120,17 @@ public final class TaskAutomaticAssignmentConfigHome
     // Finders
 
     /**
-         * Load the Config Object
-         * @param nIdTask the task id
-         * @param plugin the plugin
-         * @return the Config Object
-         */
-    public static TaskAutomaticAssignmentConfig findByPrimaryKey( int nIdTask, Plugin autoAssignmentPlugin, Plugin workflowPlugin )
+     * Load the Config Object
+     * @param nIdTask the task id
+     * @param autoAssignmentPlugin the auto assignment plugin
+     * @param workflowPlugin the workflow plugin
+     * @return the Config Object
+     */
+    public static TaskAutomaticAssignmentConfig findByPrimaryKey( int nIdTask, Plugin autoAssignmentPlugin,
+        Plugin workflowPlugin )
     {
         TaskAutomaticAssignmentConfig config = _dao.load( nIdTask, autoAssignmentPlugin );
-        
+
         if ( config != null )
         {
             config.setWorkgroups( WorkgroupConfigHome.getListByConfig( nIdTask, workflowPlugin ) );

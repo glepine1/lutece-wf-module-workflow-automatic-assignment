@@ -38,14 +38,18 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import java.util.List;
 
 
+/**
+ *
+ * IAutomaticAssignmentDAO
+ *
+ */
 public interface IAutomaticAssignmentDAO
 {
-	 /**
-     * Create a new automatic assignment
-     * @param assign the assignment to create
-     * @param plugin the plugin
-     *
-     */
+    /**
+    * Create a new automatic assignment
+    * @param assign the assignment to create
+    * @param plugin the plugin
+    */
     void insert( AutomaticAssignment assign, Plugin plugin );
 
     /**

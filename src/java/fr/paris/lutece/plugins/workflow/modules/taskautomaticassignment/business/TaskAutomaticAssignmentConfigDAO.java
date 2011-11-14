@@ -39,22 +39,22 @@ import fr.paris.lutece.util.sql.DAOUtil;
 
 /**
  *
- *class   TaskAssignmentConfigDAO
+ * TaskAutomaticAssignmentConfigDAO
  *
  */
 public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmentConfigDAO
 {
-    private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT id_task, id_directory, title,is_notify,message,subject,sender_name " +
+    private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT id_task, id_directory, title,is_notify,message,subject,sender_name,is_view_record,label_link_view_record " +
         " FROM workflow_auto_assignment_cf WHERE id_task=?";
     private static final String SQL_QUERY_INSERT = "INSERT INTO  workflow_auto_assignment_cf  " +
-        "(id_task,id_directory, title, is_notify,message,subject,sender_name)VALUES(?,?,?,?,?,?,?)";
+        "(id_task,id_directory, title, is_notify,message,subject,sender_name,is_view_record,label_link_view_record)VALUES(?,?,?,?,?,?,?,?,?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE workflow_auto_assignment_cf " +
-        "SET id_task=?,id_directory=?, title=?, is_notify=?, message = ?, subject = ?, sender_name = ? " + " WHERE id_task=? ";
+        "SET id_task=?,id_directory=?, title=?, is_notify=?, message = ?, subject = ?, sender_name = ?, is_view_record = ?, label_link_view_record = ? " +
+        " WHERE id_task=? ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM workflow_auto_assignment_cf  WHERE id_task=? ";
 
-    /*
-     * (non-Javadoc)
-     * @see fr.paris.lutece.plugins.workflow.modules.taskassignment.business.ITaskAutomaticAssignmentConfigDAO#insert(fr.paris.lutece.plugins.workflow.modules.taskassignment.business.TaskAssignmentConfig, fr.paris.lutece.portal.service.plugin.Plugin)
+    /**
+     * {@inheritDoc}
      */
     public synchronized void insert( TaskAutomaticAssignmentConfig config, Plugin plugin )
     {
@@ -69,14 +69,16 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
         daoUtil.setString( ++nPos, config.getMessage(  ) );
         daoUtil.setString( ++nPos, config.getSubject(  ) );
         daoUtil.setString( ++nPos, config.getSenderName(  ) );
+        daoUtil.setBoolean( ++nPos, config.isViewRecord(  ) );
+        daoUtil.setString( ++nPos, config.getLabelLinkViewRecord(  ) );
 
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
     }
 
-    /* (non-Javadoc)
-         * @see fr.paris.lutece.plugins.workflow.modules.taskassignment.business.ITaskAutomaticAssignmentConfigDAO#store(fr.paris.lutece.plugins.workflow.modules.taskassignment.business.TaskAssignmentConfig, fr.paris.lutece.portal.service.plugin.Plugin)
-         */
+    /**
+     * {@inheritDoc}
+     */
     public void store( TaskAutomaticAssignmentConfig config, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
@@ -90,6 +92,8 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
         daoUtil.setString( ++nPos, config.getMessage(  ) );
         daoUtil.setString( ++nPos, config.getSubject(  ) );
         daoUtil.setString( ++nPos, config.getSenderName(  ) );
+        daoUtil.setBoolean( ++nPos, config.isViewRecord(  ) );
+        daoUtil.setString( ++nPos, config.getLabelLinkViewRecord(  ) );
 
         daoUtil.setInt( ++nPos, config.getIdTask(  ) );
 
@@ -97,9 +101,8 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
         daoUtil.free(  );
     }
 
-    /*
-     * (non-Javadoc)
-     * @see fr.paris.lutece.plugins.workflow.modules.taskassignment.business.ITaskAutomaticAssignmentConfigDAO#load(int, fr.paris.lutece.portal.service.plugin.Plugin)
+    /**
+     * {@inheritDoc}
      */
     public TaskAutomaticAssignmentConfig load( int nIdTask, Plugin plugin )
     {
@@ -122,6 +125,8 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
             config.setMessage( daoUtil.getString( ++nPos ) );
             config.setSubject( daoUtil.getString( ++nPos ) );
             config.setSenderName( daoUtil.getString( ++nPos ) );
+            config.setViewRecord( daoUtil.getBoolean( ++nPos ) );
+            config.setLabelLinkViewRecord( daoUtil.getString( ++nPos ) );
         }
 
         daoUtil.free(  );
@@ -129,9 +134,8 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
         return config;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see fr.paris.lutece.plugins.workflow.modules.taskassignment.business.ITaskAutomaticAssignmentConfigDAO#delete(int, fr.paris.lutece.portal.service.plugin.Plugin)
+    /**
+     * {@inheritDoc}
      */
     public void delete( int nIdTask, Plugin plugin )
     {

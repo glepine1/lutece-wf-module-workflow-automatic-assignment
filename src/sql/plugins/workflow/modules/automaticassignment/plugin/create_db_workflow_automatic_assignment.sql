@@ -25,5 +25,7 @@ CREATE TABLE  workflow_auto_assignment_cf (
   sender_name VARCHAR(255) DEFAULT NULL, 
   message LONG VARCHAR DEFAULT NULL,
   subject VARCHAR(255) DEFAULT NULL,
+  is_view_record SMALLINT(6) NOT NULL DEFAULT 0,
+  label_link_view_record VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY  (id_task)
 ) ;

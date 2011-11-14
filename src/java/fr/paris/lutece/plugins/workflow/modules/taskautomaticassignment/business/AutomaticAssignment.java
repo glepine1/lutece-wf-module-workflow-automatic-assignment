@@ -33,121 +33,126 @@
  */
 package fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.business;
 
-import fr.paris.lutece.plugins.directory.business.Entry;
+import fr.paris.lutece.plugins.directory.business.IEntry;
 
 
+/**
+ *
+ * AutomaticAssignment
+ *
+ */
 public class AutomaticAssignment
 {
     private int _nIdTask;
-    private Entry _entry;
+    private IEntry _entry;
     private int _nIdField;
     private String _strFieldValue;
     private String _strWorkgroupKey;
     private String _strWorkgroupDescription;
 
     /**
-    *
-    * @return the task id
-    */
+     * Get the id task
+     * @return the task id
+     */
     public int getIdTask(  )
     {
         return _nIdTask;
     }
 
     /**
-    *
-    * @param the task id
-    */
+     * Set the id task
+     * @param nIdTask the task id
+     */
     public void setIdTask( int nIdTask )
     {
         _nIdTask = nIdTask;
     }
 
     /**
-    *
-    * @return the entry
-    */
-    public Entry getEntry(  )
+     * Get the entry
+     * @return the entry
+     */
+    public IEntry getEntry(  )
     {
         return _entry;
     }
 
     /**
-    *
-    * @param the entry
-    */
-    public void setEntry( Entry entry )
+     * Set the entry
+     * @param entry the entry
+     */
+    public void setEntry( IEntry entry )
     {
         _entry = entry;
     }
 
     /**
-    *
-    * @return the field id
-    */
+     * Get the id field
+     * @return the field id
+     */
     public int getIdField(  )
     {
         return _nIdField;
     }
 
     /**
-    *
-    * @param the field id
-    */
+     * Set the id field
+     * @param nIdField the field id
+     */
     public void setIdField( int nIdField )
     {
         _nIdField = nIdField;
     }
 
     /**
-    *
-    * @return the workgroup id
-    */
+     * Get the workgroup id
+     * @return the workgroup id
+     */
     public String getWorkgroupKey(  )
     {
         return _strWorkgroupKey;
     }
 
     /**
-    *
-    * @param the workgroup id
-    */
+     * Set the workgroup id
+     * @param strWorkgroupKey the workgroup id
+     */
     public void setWorkgroupKey( String strWorkgroupKey )
     {
         _strWorkgroupKey = strWorkgroupKey;
     }
 
     /**
-    *
-    * @return the field id
-    */
+     * Get the field value
+     * @return the field value
+     */
     public String getFieldValue(  )
     {
         return _strFieldValue;
     }
 
     /**
-    *
-    * @param the field id
-    */
+     * Set the field value
+     * @param strFieldValue the field value
+     */
     public void setFieldValue( String strFieldValue )
     {
         _strFieldValue = strFieldValue;
     }
 
     /**
-    *
-    * @return the workgroup description
-    */
+     * Get the workgroup description
+     * @return the workgroup description
+     */
     public String getWorkgroupDescription(  )
     {
         return _strWorkgroupDescription;
     }
 
     /**
-    *
-    * @param the workgroup description
-    */
+     * Get the workgroup description
+     * @param strWorkgroupDescription the workgroup description
+     */
     public void setWorkgroupDescription( String strWorkgroupDescription )
     {
         _strWorkgroupDescription = strWorkgroupDescription;

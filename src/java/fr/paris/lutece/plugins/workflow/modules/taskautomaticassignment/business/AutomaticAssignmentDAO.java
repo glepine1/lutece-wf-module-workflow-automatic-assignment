@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.business;
 
 import fr.paris.lutece.plugins.directory.business.Entry;
+import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -165,7 +166,7 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
     {
         List<AutomaticAssignment> assignmentList = new ArrayList<AutomaticAssignment>(  );
         AutomaticAssignment assignment = null;
-        Entry entry = new Entry(  );
+        IEntry entry = new Entry(  );
         entry.setIdEntry( nIdEntry );
 
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_TASK_BY_ENTRY, plugin );
@@ -200,7 +201,7 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
     {
         List<AutomaticAssignment> assignmentList = new ArrayList<AutomaticAssignment>(  );
         AutomaticAssignment assignment = null;
-        Entry entry = null;
+        IEntry entry = null;
 
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_TASK, plugin );
 

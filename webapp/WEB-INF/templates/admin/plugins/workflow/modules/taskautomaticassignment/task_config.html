@@ -1,3 +1,4 @@
+<#include "/admin/util/editor/editor.html" />
 
 <div>
   <h2> #i18n{module.workflow.taskautomaticassignment.task_config.title}</h2> 	
@@ -63,26 +64,55 @@
 		 			<h2>#i18n{module.workflow.taskautomaticassignment.task_config.full_entry_list.title}</h2>
 		 			<#if full_entry_list?size = 0>
 		 					#i18n{module.workflow.taskautomaticassignment.task_config.entry_list.label.noentry}
-		 				<#else>	 				
-			 				<table>
-								<tr>
-									<th>#i18n{module.workflow.taskautomaticassignment.task_config.label.entry}</th>						
-									<th>#i18n{module.workflow.taskautomaticassignment.task_config.label.freemarker}</th>
-									
-								</tr>
-				 				<#list full_entry_list as entry>
-				 					<#if entry?? && entry.title??>
-									 	<tr>
-									 		<td>${entry.title}</td>
-									 		<td>&#36;&#123;entry_${entry.idEntry}&#125;</td>							 		
-								 		</tr>
-							 		</#if>
-							 	</#list>						 	
-						 	</table>
-						</#if>		
-					 	<br />	<br />	
+	 				<#else>	 				
+		 				<table>
+							<tr>
+								<th>#i18n{module.workflow.taskautomaticassignment.task_config.label.entry}</th>						
+								<th>#i18n{module.workflow.taskautomaticassignment.task_config.label.freemarker}</th>
+								
+							</tr>
+			 				<#list full_entry_list as entry>
+			 					<#if entry?? && entry.title??>
+								 	<tr>
+								 		<td>${entry.title}</td>
+								 		<td>&#36;&#123;entry_${entry.idEntry}&#125;</td>							 		
+							 		</tr>
+						 		</#if>
+						 	</#list>
+					 	</table>
+					</#if>
+				 	<br />
+				 	<br />
 		 		</div>
 		 	</#if>
+		 	<p>
+				<label for="view_record">#i18n{module.workflow.taskautomaticassignment.task_config.label_view_record} :</label>
+				<input type="checkbox" name="view_record" id="view_record" value="1" 
+					<#if config?exists && config.viewRecord>
+						checked="checked"
+					</#if>	
+				/>
+			    <br/>
+			    <label>&nbsp;</label>
+				#i18n{module.workflow.taskautomaticassignment.task_config.label_view_record_comment}
+			</p>
+			<div id="record">
+				<p>
+					<label>&nbsp;</label>
+					#i18n{module.workflow.taskautomaticassignment.task_config.label_freemarker_link_view_record}
+				</p>
+				<p>
+			    	<label for="label_link_view_record">#i18n{module.workflow.taskautomaticassignment.task_config.label_label_link_view_record} * :</label>
+			    	<#if config?exists && config.labelLinkViewRecord?has_content>
+		     			<input type="text" name="label_link_view_record" id="" size="80" value="${config.labelLinkViewRecord}" maxlength="255"/>
+			     	<#else>
+		     			<input type="text" name="label_link_view_record" id="" size="80" value=""  maxlength="255"/>
+			     	</#if>		
+				   	<br/>
+					<label>&nbsp;</label>
+					#i18n{module.workflow.taskautomaticassignment.task_config.label_label_link_view_record_comment}
+				</p>
+			</div>
 		 	<p>
 				 <label for="sender_name">#i18n{module.workflow.taskautomaticassignment.task_config.label_user_name} * :</label>
 	   		 		<#if config?exists&&config.senderName?exists>
@@ -107,11 +137,13 @@
 			</p>
 		 	<p>
 		    	<label for="message">#i18n{module.workflow.taskassignment.task_assignment_config.label_message} * :</label>
-			    	<#if config?exists&&config.message?exists>
-			     			<textarea name="message" id="" rows="5" cols="80">${config.message}</textarea>
-			     	<#else>
-			     			<textarea name="message" id="" rows="5" cols="80"></textarea>
-			     	</#if>		
+		    		<div class="editor">
+				    	<#if config?exists && config.message?exists>
+							<textarea name="message" id="" rows="5" cols="80" class="richtext">${config.message}</textarea>
+				     	<#else>
+				     		<textarea name="message" id="" rows="5" cols="80" class="richtext"></textarea>
+				     	</#if>		
+					</div>
 				   <br/>
 				  <label>&nbsp;</label>
 				#i18n{module.workflow.taskassignment.task_assignment_config.label_message_comment}
@@ -166,4 +198,15 @@
 		}
 	}
 	notification();
+	
+	$( document ).ready( function(  ) {
+		if ( !$( '#view_record' ).is( ':checked' ) ) {
+			$( '#record' ).hide(  );
+		}
+		$( '#view_record' ).click( function(  ) {
+			$( '#record' ).toggle(  $( this ).is( ':checked' ) );
+		} );
+	} );
 </script>
+
+<@initEditor />
