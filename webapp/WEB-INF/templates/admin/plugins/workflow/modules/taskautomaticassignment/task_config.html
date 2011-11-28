@@ -1,7 +1,7 @@
 <#include "/admin/util/editor/editor.html" />
 
 <div>
-  <h2> #i18n{module.workflow.taskautomaticassignment.task_config.title}</h2> 	
+	<h2> #i18n{module.workflow.taskautomaticassignment.task_config.title}</h2> 	
 	  	<p>
 	    	<label for="title">#i18n{module.workflow.taskautomaticassignment.task_config.label_title} * :</label>
 	    		<#if config?exists && config.title??>
@@ -59,6 +59,86 @@
    			<br />
 		</p>
 		<div id="notification">
+	    	<p>
+	    		<label for="">#i18n{module.workflow.taskautomaticassignment.task_config.label_mapping_workgroup_mailing_list} :</label>
+	    		<#assign is_first = true>
+				<#list workgroup_list as workgroup>
+					<#if !is_first>
+		    			<label for="">&nbsp;</label>
+		    		<#else>
+		    			<#assign is_first = false>
+		    		</#if>
+					<input type="checkbox" class="checkbox" name="workgroups" value="${workgroup.item.key}"
+						<#if workgroup.config?exists> checked="checked" </#if> />
+					${workgroup.item.description}
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					#i18n{module.workflow.taskassignment.task_assignment_config.label_notification} :
+					<#if workgroup.config?exists>
+						<@combo name="id_mailing_list_${workgroup.item.key}" items=mailing_list default_value=workgroup.config.idMailingList />
+					<#else>
+						<@combo name="id_mailing_list_${workgroup.item.key}" items=mailing_list default_value="-1" />
+					</#if>
+					<br />
+		   		</#list>
+   			</p>
+		 	<p>
+				 <label for="sender_name">#i18n{module.workflow.taskautomaticassignment.task_config.label_user_name} * :</label>
+	   		 		<#if config?exists&&config.senderName?exists>
+	   		 			<input type="text" name="sender_name" id="" size="80" value="${config.senderName}" maxlength="255" />
+	   		 		<#else>
+	   		 			<input type="text" name="sender_name" id="" size="80" value="" maxlength="255" />
+	   		 		</#if>
+	   				<br/>
+	   				 <label>&nbsp;</label>
+				#i18n{module.workflow.taskautomaticassignment.task_config.label_user_name_comment}
+		 	</p>
+		 	<p>
+				<label for="recipients_cc">#i18n{module.workflow.taskautomaticassignment.task_config.label_recipients_cc} :</label>
+				<#if config?exists && config.recipientsCc?has_content>
+			    	<input type="text" name="recipients_cc" id="" size="80" value="${config.recipientsCc}"  maxlength="255"/>
+			    <#else>
+			    	<input type="text" name="recipients_cc" id="" size="80" value="" maxlength="255"/>
+			    </#if>
+			    <br/>
+				<label>&nbsp;</label>
+				#i18n{module.workflow.taskautomaticassignment.task_config.label_recipients_cc_comment}
+			</p>
+			
+			<p>
+				<label for="recipients_bcc">#i18n{module.workflow.taskautomaticassignment.task_config.label_recipients_bcc} :</label>
+				<#if config?exists && config.recipientsBcc?has_content>
+			    	<input type="text" name="recipients_bcc" id="" size="80" value="${config.recipientsBcc}"  maxlength="255"/>
+			    <#else>
+			    	<input type="text" name="recipients_bcc" id="" size="80" value="" maxlength="255"/>
+			    </#if>
+			    <br/>
+				<label>&nbsp;</label>
+				#i18n{module.workflow.taskautomaticassignment.task_config.label_recipients_bcc_comment}
+			</p>
+		 	<p>
+		    	<label for="suject">#i18n{module.workflow.taskassignment.task_assignment_config.label_subject} * :</label>
+			    	<#if config?exists&&config.subject?exists>
+			     			<input type="text" name="subject" id="" size="80" value="${config.subject}"  maxlength="255"/>
+			     	<#else>
+			     			<input type="text" name="subject" id="" size="80" value=""  maxlength="255"/>
+			     	</#if>		
+				   <br/>
+				  <label>&nbsp;</label>
+				#i18n{module.workflow.taskassignment.task_assignment_config.label_subject_comment}
+			</p>
+		 	<p>
+		    	<label for="message">#i18n{module.workflow.taskassignment.task_assignment_config.label_message} * :</label>
+		    		<div class="editor">
+				    	<#if config?exists && config.message?exists>
+							<textarea name="message" id="" rows="5" cols="80" class="richtext">${config.message}</textarea>
+				     	<#else>
+				     		<textarea name="message" id="" rows="5" cols="80" class="richtext"></textarea>
+				     	</#if>		
+					</div>
+				   <br/>
+				  <label>&nbsp;</label>
+				#i18n{module.workflow.taskassignment.task_assignment_config.label_message_comment}
+			</p>
 			<#if full_entry_list??>
 		 		<div class="highlight-box">
 		 			<h2>#i18n{module.workflow.taskautomaticassignment.task_config.full_entry_list.title}</h2>
@@ -113,63 +193,7 @@
 					#i18n{module.workflow.taskautomaticassignment.task_config.label_label_link_view_record_comment}
 				</p>
 			</div>
-		 	<p>
-				 <label for="sender_name">#i18n{module.workflow.taskautomaticassignment.task_config.label_user_name} * :</label>
-	   		 		<#if config?exists&&config.senderName?exists>
-	   		 			<input type="text" name="sender_name" id="" size="80" value="${config.senderName}" maxlength="255" />
-	   		 		<#else>
-	   		 			<input type="text" name="sender_name" id="" size="80" value="" maxlength="255" />
-	   		 		</#if>
-	   				<br/>
-	   				 <label>&nbsp;</label>
-				#i18n{module.workflow.taskautomaticassignment.task_config.label_user_name_comment}
-		 	</p>
-		 	<p>
-		    	<label for="suject">#i18n{module.workflow.taskassignment.task_assignment_config.label_subject} * :</label>
-			    	<#if config?exists&&config.subject?exists>
-			     			<input type="text" name="subject" id="" size="80" value="${config.subject}"  maxlength="255"/>
-			     	<#else>
-			     			<input type="text" name="subject" id="" size="80" value=""  maxlength="255"/>
-			     	</#if>		
-				   <br/>
-				  <label>&nbsp;</label>
-				#i18n{module.workflow.taskassignment.task_assignment_config.label_subject_comment}
-			</p>
-		 	<p>
-		    	<label for="message">#i18n{module.workflow.taskassignment.task_assignment_config.label_message} * :</label>
-		    		<div class="editor">
-				    	<#if config?exists && config.message?exists>
-							<textarea name="message" id="" rows="5" cols="80" class="richtext">${config.message}</textarea>
-				     	<#else>
-				     		<textarea name="message" id="" rows="5" cols="80" class="richtext"></textarea>
-				     	</#if>		
-					</div>
-				   <br/>
-				  <label>&nbsp;</label>
-				#i18n{module.workflow.taskassignment.task_assignment_config.label_message_comment}
-			</p>	
-			<#list workgroup_list as workgroup>
-		    	<p>
-		    		<label for="">&nbsp;</label>
-					<div style="float:left;">
-						<input type="checkbox" class="checkbox" name="workgroups" value="${workgroup.item.key}"
-							<#if workgroup.config?exists> checked="checked" </#if> />
-						${workgroup.item.description}
-					</div>
-					<div id="div_${workgroup.item.key}" style="padding-top:3px;">
-						&nbsp;&nbsp;&nbsp;&nbsp;
-						#i18n{module.workflow.taskassignment.task_assignment_config.label_notification} :
-						<#if workgroup.config?exists>
-							<@combo name="id_mailing_list_${workgroup.item.key}" items=mailing_list default_value=workgroup.config.idMailingList />
-						<#else>
-							<@combo name="id_mailing_list_${workgroup.item.key}" items=mailing_list default_value="-1" />
-						</#if>
-					</div>
-					<br />
-	   			</p>
-	   		</#list>
 		</div>
-	 
 </div>
 <script type="text/javascript" charset="utf-8">
 	function notification()

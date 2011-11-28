@@ -44,12 +44,12 @@ import fr.paris.lutece.util.sql.DAOUtil;
  */
 public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmentConfigDAO
 {
-    private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT id_task, id_directory, title,is_notify,message,subject,sender_name,is_view_record,label_link_view_record " +
+    private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT id_task, id_directory, title,is_notify,message,subject,sender_name,is_view_record,label_link_view_record,recipients_cc,recipients_bcc " +
         " FROM workflow_auto_assignment_cf WHERE id_task=?";
     private static final String SQL_QUERY_INSERT = "INSERT INTO  workflow_auto_assignment_cf  " +
-        "(id_task,id_directory, title, is_notify,message,subject,sender_name,is_view_record,label_link_view_record)VALUES(?,?,?,?,?,?,?,?,?)";
+        "(id_task,id_directory, title, is_notify,message,subject,sender_name,is_view_record,label_link_view_record,recipients_cc,recipients_bcc)VALUES(?,?,?,?,?,?,?,?,?,?,?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE workflow_auto_assignment_cf " +
-        "SET id_task=?,id_directory=?, title=?, is_notify=?, message = ?, subject = ?, sender_name = ?, is_view_record = ?, label_link_view_record = ? " +
+        "SET id_task=?,id_directory=?, title=?, is_notify=?, message = ?, subject = ?, sender_name = ?, is_view_record = ?, label_link_view_record = ?, recipients_cc = ?, recipients_bcc = ? " +
         " WHERE id_task=? ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM workflow_auto_assignment_cf  WHERE id_task=? ";
 
@@ -71,6 +71,8 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
         daoUtil.setString( ++nPos, config.getSenderName(  ) );
         daoUtil.setBoolean( ++nPos, config.isViewRecord(  ) );
         daoUtil.setString( ++nPos, config.getLabelLinkViewRecord(  ) );
+        daoUtil.setString( ++nPos, config.getRecipientsCc(  ) );
+        daoUtil.setString( ++nPos, config.getRecipientsBcc(  ) );
 
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
@@ -94,6 +96,8 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
         daoUtil.setString( ++nPos, config.getSenderName(  ) );
         daoUtil.setBoolean( ++nPos, config.isViewRecord(  ) );
         daoUtil.setString( ++nPos, config.getLabelLinkViewRecord(  ) );
+        daoUtil.setString( ++nPos, config.getRecipientsCc(  ) );
+        daoUtil.setString( ++nPos, config.getRecipientsBcc(  ) );
 
         daoUtil.setInt( ++nPos, config.getIdTask(  ) );
 
@@ -127,6 +131,8 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
             config.setSenderName( daoUtil.getString( ++nPos ) );
             config.setViewRecord( daoUtil.getBoolean( ++nPos ) );
             config.setLabelLinkViewRecord( daoUtil.getString( ++nPos ) );
+            config.setRecipientsCc( daoUtil.getString( ++nPos ) );
+            config.setRecipientsBcc( daoUtil.getString( ++nPos ) );
         }
 
         daoUtil.free(  );

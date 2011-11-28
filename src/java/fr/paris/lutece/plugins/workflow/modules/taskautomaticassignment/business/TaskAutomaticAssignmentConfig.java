@@ -57,6 +57,8 @@ public class TaskAutomaticAssignmentConfig
     private List<WorkgroupConfig> _workgroups;
     private boolean _bViewRecord;
     private String _strLabelLinkViewRecord;
+    private String _strRecipientsCc;
+    private String _strRecipientsBcc;
 
     /**
      * Get the id task
@@ -254,5 +256,41 @@ public class TaskAutomaticAssignmentConfig
     public String getLabelLinkViewRecord(  )
     {
         return _strLabelLinkViewRecord;
+    }
+
+    /**
+     * Returns the Recipient
+     * @return The Recipient
+     */
+    public String getRecipientsCc(  )
+    {
+        return _strRecipientsCc;
+    }
+
+    /**
+     * Sets the Recipient
+     * @param strRecipient The Recipient
+     */
+    public void setRecipientsCc( String strRecipient )
+    {
+        _strRecipientsCc = strRecipient;
+    }
+
+    /**
+     * Returns the Recipient
+     * @return The Recipient
+     */
+    public String getRecipientsBcc(  )
+    {
+        return _strRecipientsBcc;
+    }
+
+    /**
+     * Sets the Recipient
+     * @param strRecipient The Recipient
+     */
+    public void setRecipientsBcc( String strRecipient )
+    {
+        _strRecipientsBcc = strRecipient;
     }
 }

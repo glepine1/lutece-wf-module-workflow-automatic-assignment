@@ -53,6 +53,7 @@ import fr.paris.lutece.plugins.workflow.modules.taskassignment.business.Assignme
 import fr.paris.lutece.plugins.workflow.modules.taskassignment.business.WorkgroupConfig;
 import fr.paris.lutece.plugins.workflow.modules.taskassignment.business.WorkgroupConfigHome;
 import fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.service.AutomaticAssignmentPlugin;
+import fr.paris.lutece.plugins.workflow.service.WorkflowPlugin;
 import fr.paris.lutece.plugins.workflow.utils.WorkflowUtils;
 import fr.paris.lutece.portal.business.mailinglist.MailingList;
 import fr.paris.lutece.portal.business.mailinglist.MailingListHome;
@@ -82,7 +83,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -124,6 +124,8 @@ public class TaskAutomaticAssignment extends Task
     private static final String PARAMETER_ID_TASK = "id_task";
     private static final String PARAMETER_VIEW_RECORD = "view_record";
     private static final String PARAMETER_LABEL_LINK_VIEW_RECORD = "label_link_view_record";
+    private static final String PARAMETER_RECIPIENTS_CC = "recipients_cc";
+    private static final String PARAMETER_RECIPIENTS_BCC = "recipients_bcc";
 
     // Properties
     private static final String FIELD_TITLE = "module.workflow.taskautomaticassignment.task_config.label_title";
@@ -159,10 +161,11 @@ public class TaskAutomaticAssignment extends Task
     private static final int CONSTANT_ID_TYPE_CHECKBOX = 2;
     private static final int CONSTANT_ID_TYPE_SELECT = 5;
     private static final String CONSTANT_COMMA = ", ";
-    private static final String CONSTANT_FREEMARKER_BEGIN = "${";
-    private static final String CONSTANT_FREEMARKER_END = "}";
-    private static final String CONSTANT_FREEMARKER_REGEXP_BEGIN = "(\\$\\{";
-    private static final String CONSTANT_FREEMARKER_REGEXP_END = "\\})";
+
+    //    private static final String CONSTANT_FREEMARKER_BEGIN = "${";
+    //    private static final String CONSTANT_FREEMARKER_END = "}";
+    //    private static final String CONSTANT_FREEMARKER_REGEXP_BEGIN = "(\\$\\{";
+    //    private static final String CONSTANT_FREEMARKER_REGEXP_END = "\\})";
     private static final String CONSTANT_SLASH = "/";
 
     /**
@@ -188,6 +191,8 @@ public class TaskAutomaticAssignment extends Task
         String[] tabWorkgroups = request.getParameterValues( PARAMETER_WORKGROUPS );
         String strViewRecord = request.getParameter( PARAMETER_VIEW_RECORD );
         String strLabelLinkViewRecord = request.getParameter( PARAMETER_LABEL_LINK_VIEW_RECORD );
+        String strRecipientsCc = request.getParameter( PARAMETER_RECIPIENTS_CC );
+        String strRecipientsBcc = request.getParameter( PARAMETER_RECIPIENTS_BCC );
         int nIdDirectory = -1;
 
         Plugin autoAssignPlugin = PluginService.getPlugin( AutomaticAssignmentPlugin.PLUGIN_NAME );
@@ -281,6 +286,8 @@ public class TaskAutomaticAssignment extends Task
         config.setSenderName( strSenderName );
         config.setViewRecord( strViewRecord != null );
         config.setLabelLinkViewRecord( strLabelLinkViewRecord );
+        config.setRecipientsCc( StringUtils.isNotEmpty( strRecipientsCc ) ? strRecipientsCc : StringUtils.EMPTY );
+        config.setRecipientsBcc( StringUtils.isNotEmpty( strRecipientsBcc ) ? strRecipientsBcc : StringUtils.EMPTY );
 
         if ( config.getIdDirectory(  ) != nIdDirectory )
         {
@@ -442,17 +449,12 @@ public class TaskAutomaticAssignment extends Task
         ResourceHistory resourceHistory = ResourceHistoryHome.findByPrimaryKey( nIdResourceHistory, workflowPlugin );
         List<String> listWorkgroup = new ArrayList<String>(  );
 
-        TaskAutomaticAssignmentConfig config = TaskAutomaticAssignmentConfigHome.findByPrimaryKey( this.getId(  ),
-                autoAssignPlugin, workflowPlugin );
-
         List<AutomaticAssignment> listAssignment = AutomaticAssignmentHome.findByTask( this.getId(  ), autoAssignPlugin );
 
         List<Integer> idEntryList = AutomaticAssignmentHome.findAllIdEntriesByTask( this.getId(  ), autoAssignPlugin );
 
         List<RecordField> recordFields = RecordFieldHome.getRecordFieldSpecificList( idEntryList,
                 resourceHistory.getIdResource(  ), directoryPlugin );
-
-        HashMap<String, Object> model = new HashMap<String, Object>(  );
 
         for ( RecordField recordField : recordFields )
         {
@@ -470,150 +472,12 @@ public class TaskAutomaticAssignment extends Task
             }
         }
 
-        //get values for markers that can be used in the message
-        RecordFieldFilter filter = new RecordFieldFilter(  );
-        filter.setIdDirectory( config.getIdDirectory(  ) );
-        filter.setIdRecord( resourceHistory.getIdResource(  ) );
+        TaskAutomaticAssignmentConfig config = TaskAutomaticAssignmentConfigHome.findByPrimaryKey( this.getId(  ),
+                autoAssignPlugin, workflowPlugin );
 
-        List<RecordField> recordFieldsForMarkers = RecordFieldHome.getRecordFieldList( filter, directoryPlugin );
-
-        for ( RecordField recordField : recordFieldsForMarkers )
+        if ( ( config != null ) && config.isNotify(  ) )
         {
-            String strKey = MARK_ENTRY_MARKER + recordField.getEntry(  ).getIdEntry(  );
-            String strOldValue = ( (String) model.get( strKey ) );
-            String strNewValue;
-            IEntry recordfielEntry = recordField.getEntry(  );
-
-            strNewValue = recordField.getValue(  );
-
-            if ( ( recordfielEntry != null ) && ( recordfielEntry.getEntryType(  ) != null ) &&
-                    ( recordfielEntry.getEntryType(  ).getIdType(  ) == AppPropertiesService.getPropertyInt( 
-                        PROPERTY_ENTRY_TYPE_GEOLOCATION, 16 ) ) )
-            {
-                if ( ( ( ( recordField.getField(  ) != null ) && ( recordField.getField(  ).getTitle(  ) != null ) ) &&
-                        ( !recordField.getField(  ).getTitle(  ).equals( EntryTypeGeolocation.CONSTANT_ADDRESS ) ) ) ||
-                        ( ( recordField.getField(  ) == null ) || ( recordField.getField(  ).getTitle(  ) == null ) ) )
-                {
-                    strNewValue = null;
-                }
-            }
-            else if ( ( recordField.getField(  ) != null ) && ( recordField.getField(  ).getTitle(  ) != null ) )
-            {
-                strNewValue = recordField.getField(  ).getTitle(  );
-            }
-
-            //if it's a file
-            if ( recordField.getFile(  ) != null )
-            {
-                strNewValue = recordField.getFile(  ).getTitle(  );
-            }
-
-            if ( ( strOldValue != null ) && ( strNewValue != null ) &&
-                    ( !strOldValue.equals( WorkflowUtils.EMPTY_STRING ) ) )
-            {
-                //add markers for message
-                model.put( strKey, strNewValue + CONSTANT_COMMA + strOldValue );
-            }
-            else if ( strNewValue != null )
-            {
-                model.put( strKey, strNewValue );
-            }
-            else
-            {
-                model.put( strKey, WorkflowUtils.EMPTY_STRING );
-            }
-        }
-
-        // Link View record
-        String strLinkViewRecordHtml = DirectoryUtils.EMPTY_STRING;
-
-        if ( config.isViewRecord(  ) )
-        {
-            StringBuilder sbBaseUrl = new StringBuilder( getBaseUrl( request ) );
-
-            if ( ( sbBaseUrl.length(  ) > 0 ) && !sbBaseUrl.toString(  ).endsWith( CONSTANT_SLASH ) )
-            {
-                sbBaseUrl.append( CONSTANT_SLASH );
-            }
-
-            sbBaseUrl.append( JSP_DO_VISUALISATION_RECORD );
-
-            UrlItem url = new UrlItem( sbBaseUrl.toString(  ) );
-            url.addParameter( DirectoryUtils.PARAMETER_ID_DIRECTORY, config.getIdDirectory(  ) );
-            url.addParameter( DirectoryUtils.PARAMETER_ID_DIRECTORY_RECORD, resourceHistory.getIdResource(  ) );
-
-            StringBuffer sbLinkHtml = new StringBuffer(  );
-            Map<String, String> mapParams = new HashMap<String, String>(  );
-            mapParams.put( ATTRIBUTE_HREF, url.getUrl(  ) );
-            XmlUtil.beginElement( sbLinkHtml, TAG_A, mapParams );
-            sbLinkHtml.append( config.getLabelLinkViewRecord(  ) );
-            XmlUtil.endElement( sbLinkHtml, TAG_A );
-
-            Map<String, Object> modelTmp = new HashMap<String, Object>(  );
-            modelTmp.put( MARK_LINK_VIEW_RECORD, url.getUrl(  ) );
-            strLinkViewRecordHtml = AppTemplateService.getTemplateFromStringFtl( sbLinkHtml.toString(  ), locale,
-                    modelTmp ).getHtml(  );
-        }
-
-        model.put( MARK_LINK_VIEW_RECORD, strLinkViewRecordHtml );
-
-        for ( String workGroup : listWorkgroup )
-        {
-            //add history 
-            AssignmentHistory history = new AssignmentHistory(  );
-            history.setIdResourceHistory( nIdResourceHistory );
-            history.setIdTask( this.getId(  ) );
-            history.setWorkgroup( workGroup );
-            AssignmentHistoryHome.create( history, workflowPlugin );
-
-            if ( config.isNotify(  ) )
-            {
-                WorkgroupConfig workgroupConfig = WorkgroupConfigHome.findByPrimaryKey( this.getId(  ), workGroup,
-                        workflowPlugin );
-
-                if ( ( workgroupConfig != null ) &&
-                        ( workgroupConfig.getIdMailingList(  ) != WorkflowUtils.CONSTANT_ID_NULL ) )
-                {
-                    Collection<Recipient> listRecipients = new ArrayList<Recipient>(  );
-                    listRecipients = AdminMailingListService.getRecipients( workgroupConfig.getIdMailingList(  ) );
-
-                    String strSenderEmail = MailService.getNoReplyEmail(  );
-
-                    model.put( MARK_MESSAGE, config.getMessage(  ) );
-
-                    HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_TASK_NOTIFICATION_MAIL, locale, model );
-
-                    String strSubject = config.getSubject(  );
-
-                    for ( Entry<String, Object> entryModel : model.entrySet(  ) )
-                    {
-                        String strCurrentFreemarker = CONSTANT_FREEMARKER_BEGIN + entryModel.getKey(  ) +
-                            CONSTANT_FREEMARKER_END;
-
-                        //substitute freemarkers in the message
-                        t.substitute( strCurrentFreemarker, entryModel.getValue(  ).toString(  ) );
-
-                        //substitute freemarkers in the subject
-                        strSubject = strSubject.replaceAll( CONSTANT_FREEMARKER_REGEXP_BEGIN + entryModel.getKey(  ) +
-                                CONSTANT_FREEMARKER_REGEXP_END, entryModel.getValue(  ).toString(  ) );
-                    }
-
-                    String strSenderName = config.getSenderName(  );
-
-                    if ( strSenderName == null )
-                    {
-                        strSenderName = I18nService.getLocalizedString( PROPERTY_MAIL_SENDER_NAME, locale );
-                    }
-
-                    // Send Mail
-                    for ( Recipient recipient : listRecipients )
-                    {
-                        // Build the mail message
-                        MailService.sendMailHtml( recipient.getEmail(  ), strSenderName, strSenderEmail, strSubject,
-                            t.getHtml(  ) );
-                    }
-                }
-            }
+            notify( config, listWorkgroup, resourceHistory, request, locale );
         }
 
         //update resource workflow 
@@ -734,5 +598,200 @@ public class TaskAutomaticAssignment extends Task
         }
 
         return strBaseUrl;
+    }
+
+    /**
+     * Notify the mailing list associated to the list of workgroups
+     * @param config the config
+     * @param listWorkgroup the list of workgroups
+     * @param resourceHistory the resource history
+     * @param request the HTTP request
+     * @param locale the {@link Locale}
+     */
+    private void notify( TaskAutomaticAssignmentConfig config, List<String> listWorkgroup,
+        ResourceHistory resourceHistory, HttpServletRequest request, Locale locale )
+    {
+        Plugin workflowPlugin = PluginService.getPlugin( WorkflowPlugin.PLUGIN_NAME );
+
+        String strSenderEmail = MailService.getNoReplyEmail(  );
+        String strSenderName = config.getSenderName(  );
+
+        if ( StringUtils.isBlank( strSenderName ) )
+        {
+            strSenderName = I18nService.getLocalizedString( PROPERTY_MAIL_SENDER_NAME, locale );
+        }
+
+        Map<String, Object> model = buildModel( config, resourceHistory, request, locale );
+        String strEmailContent = buildMailHtml( model, locale );
+        String strSubject = buildSubjectHtml( config, model, locale );
+
+        // Notify the mailings list associated to each workgroup
+        for ( String workGroup : listWorkgroup )
+        {
+            //add history 
+            AssignmentHistory history = new AssignmentHistory(  );
+            history.setIdResourceHistory( resourceHistory.getId(  ) );
+            history.setIdTask( this.getId(  ) );
+            history.setWorkgroup( workGroup );
+            AssignmentHistoryHome.create( history, workflowPlugin );
+
+            WorkgroupConfig workgroupConfig = WorkgroupConfigHome.findByPrimaryKey( this.getId(  ), workGroup,
+                    workflowPlugin );
+
+            if ( ( workgroupConfig != null ) &&
+                    ( workgroupConfig.getIdMailingList(  ) != WorkflowUtils.CONSTANT_ID_NULL ) )
+            {
+                Collection<Recipient> listRecipients = AdminMailingListService.getRecipients( workgroupConfig.getIdMailingList(  ) );
+
+                // Send Mail
+                for ( Recipient recipient : listRecipients )
+                {
+                    // Build the mail message
+                    MailService.sendMailHtml( recipient.getEmail(  ), strSenderName, strSenderEmail, strSubject,
+                        strEmailContent );
+                }
+            }
+        }
+
+        // Notify recipients
+        boolean bHasRecipients = ( StringUtils.isNotBlank( config.getRecipientsBcc(  ) ) ||
+            StringUtils.isNotBlank( config.getRecipientsCc(  ) ) );
+
+        if ( bHasRecipients )
+        {
+            MailService.sendMailHtml( null, config.getRecipientsCc(  ), config.getRecipientsBcc(  ),
+                config.getSenderName(  ), strSenderEmail, strSubject, strEmailContent );
+        }
+    }
+
+    /**
+     * Build the mail Html
+     * @param model the model
+     * @param locale the {@link Locale}
+     * @return the mail HTML
+     */
+    private String buildMailHtml( Map<String, Object> model, Locale locale )
+    {
+        HtmlTemplate t = AppTemplateService.getTemplateFromStringFtl( AppTemplateService.getTemplate( 
+                    TEMPLATE_TASK_NOTIFICATION_MAIL, locale, model ).getHtml(  ), locale, model );
+
+        return t.getHtml(  );
+    }
+
+    /**
+     * Build the subject Html
+     * @param config the config
+     * @param model the model
+     * @param locale the {@link Locale}
+     * @return the subject
+     */
+    private String buildSubjectHtml( TaskAutomaticAssignmentConfig config, Map<String, Object> model, Locale locale )
+    {
+        return AppTemplateService.getTemplateFromStringFtl( config.getSubject(  ), locale, model ).getHtml(  );
+    }
+
+    /**
+     * Build the model for the mail content and for the subject
+     * @param config the config
+     * @param resourceHistory the resource history
+     * @param request the HTTP request
+     * @param locale the {@link Locale}
+     * @return the model
+     */
+    private Map<String, Object> buildModel( TaskAutomaticAssignmentConfig config, ResourceHistory resourceHistory,
+        HttpServletRequest request, Locale locale )
+    {
+        Plugin directoryPlugin = PluginService.getPlugin( DirectoryPlugin.PLUGIN_NAME );
+        Map<String, Object> model = new HashMap<String, Object>(  );
+
+        // Get values for markers that can be used in the message
+        RecordFieldFilter filter = new RecordFieldFilter(  );
+        filter.setIdDirectory( config.getIdDirectory(  ) );
+        filter.setIdRecord( resourceHistory.getIdResource(  ) );
+
+        List<RecordField> recordFieldsForMarkers = RecordFieldHome.getRecordFieldList( filter, directoryPlugin );
+
+        for ( RecordField recordField : recordFieldsForMarkers )
+        {
+            String strKey = MARK_ENTRY_MARKER + recordField.getEntry(  ).getIdEntry(  );
+            String strOldValue = ( (String) model.get( strKey ) );
+            String strNewValue;
+            IEntry recordfielEntry = recordField.getEntry(  );
+
+            strNewValue = recordField.getValue(  );
+
+            if ( ( recordfielEntry != null ) && ( recordfielEntry.getEntryType(  ) != null ) &&
+                    ( recordfielEntry.getEntryType(  ).getIdType(  ) == AppPropertiesService.getPropertyInt( 
+                        PROPERTY_ENTRY_TYPE_GEOLOCATION, 16 ) ) )
+            {
+                if ( ( ( ( recordField.getField(  ) != null ) && ( recordField.getField(  ).getTitle(  ) != null ) ) &&
+                        ( !recordField.getField(  ).getTitle(  ).equals( EntryTypeGeolocation.CONSTANT_ADDRESS ) ) ) ||
+                        ( ( recordField.getField(  ) == null ) || ( recordField.getField(  ).getTitle(  ) == null ) ) )
+                {
+                    strNewValue = null;
+                }
+            }
+            else if ( ( recordField.getField(  ) != null ) && ( recordField.getField(  ).getTitle(  ) != null ) )
+            {
+                strNewValue = recordField.getField(  ).getTitle(  );
+            }
+
+            //if it's a file
+            if ( recordField.getFile(  ) != null )
+            {
+                strNewValue = recordField.getFile(  ).getTitle(  );
+            }
+
+            if ( ( strOldValue != null ) && ( strNewValue != null ) &&
+                    ( !strOldValue.equals( WorkflowUtils.EMPTY_STRING ) ) )
+            {
+                //add markers for message
+                model.put( strKey, strNewValue + CONSTANT_COMMA + strOldValue );
+            }
+            else if ( strNewValue != null )
+            {
+                model.put( strKey, strNewValue );
+            }
+            else
+            {
+                model.put( strKey, WorkflowUtils.EMPTY_STRING );
+            }
+        }
+
+        // Link View record
+        String strLinkViewRecordHtml = DirectoryUtils.EMPTY_STRING;
+
+        if ( config.isViewRecord(  ) )
+        {
+            StringBuilder sbBaseUrl = new StringBuilder( getBaseUrl( request ) );
+
+            if ( ( sbBaseUrl.length(  ) > 0 ) && !sbBaseUrl.toString(  ).endsWith( CONSTANT_SLASH ) )
+            {
+                sbBaseUrl.append( CONSTANT_SLASH );
+            }
+
+            sbBaseUrl.append( JSP_DO_VISUALISATION_RECORD );
+
+            UrlItem url = new UrlItem( sbBaseUrl.toString(  ) );
+            url.addParameter( DirectoryUtils.PARAMETER_ID_DIRECTORY, config.getIdDirectory(  ) );
+            url.addParameter( DirectoryUtils.PARAMETER_ID_DIRECTORY_RECORD, resourceHistory.getIdResource(  ) );
+
+            StringBuffer sbLinkHtml = new StringBuffer(  );
+            Map<String, String> mapParams = new HashMap<String, String>(  );
+            mapParams.put( ATTRIBUTE_HREF, url.getUrl(  ) );
+            XmlUtil.beginElement( sbLinkHtml, TAG_A, mapParams );
+            sbLinkHtml.append( config.getLabelLinkViewRecord(  ) );
+            XmlUtil.endElement( sbLinkHtml, TAG_A );
+
+            Map<String, Object> modelTmp = new HashMap<String, Object>(  );
+            modelTmp.put( MARK_LINK_VIEW_RECORD, url.getUrl(  ) );
+            strLinkViewRecordHtml = AppTemplateService.getTemplateFromStringFtl( sbLinkHtml.toString(  ), locale,
+                    modelTmp ).getHtml(  );
+        }
+
+        model.put( MARK_LINK_VIEW_RECORD, strLinkViewRecordHtml );
+        model.put( MARK_MESSAGE, config.getMessage(  ) );
+
+        return model;
     }
 }
