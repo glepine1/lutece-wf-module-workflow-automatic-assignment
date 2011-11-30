@@ -713,39 +713,33 @@ public class TaskAutomaticAssignment extends Task
 
         for ( RecordField recordField : recordFieldsForMarkers )
         {
-            String strKey = MARK_ENTRY_MARKER + recordField.getEntry(  ).getIdEntry(  );
-            String strOldValue = ( (String) model.get( strKey ) );
-            String strNewValue;
-            IEntry recordfielEntry = recordField.getEntry(  );
+            String strNewValue = recordField.getEntry(  )
+                                            .convertRecordFieldValueToString( recordField, locale, false, false );
 
-            strNewValue = recordField.getValue(  );
-
-            if ( ( recordfielEntry != null ) && ( recordfielEntry.getEntryType(  ) != null ) &&
-                    ( recordfielEntry.getEntryType(  ).getIdType(  ) == AppPropertiesService.getPropertyInt( 
-                        PROPERTY_ENTRY_TYPE_GEOLOCATION, 16 ) ) )
+            if ( recordField.getEntry(  ) instanceof fr.paris.lutece.plugins.directory.business.EntryTypeGeolocation &&
+                    !recordField.getField(  ).getTitle(  ).equals( EntryTypeGeolocation.CONSTANT_ADDRESS ) )
             {
-                if ( ( ( ( recordField.getField(  ) != null ) && ( recordField.getField(  ).getTitle(  ) != null ) ) &&
-                        ( !recordField.getField(  ).getTitle(  ).equals( EntryTypeGeolocation.CONSTANT_ADDRESS ) ) ) ||
-                        ( ( recordField.getField(  ) == null ) || ( recordField.getField(  ).getTitle(  ) == null ) ) )
-                {
-                    strNewValue = null;
-                }
+                continue;
             }
-            else if ( ( recordField.getField(  ) != null ) && ( recordField.getField(  ).getTitle(  ) != null ) )
+            else if ( ( recordField.getField(  ) != null ) && ( recordField.getField(  ).getTitle(  ) != null ) &&
+                    !( recordField.getEntry(  ) instanceof fr.paris.lutece.plugins.directory.business.EntryTypeGeolocation ) )
             {
                 strNewValue = recordField.getField(  ).getTitle(  );
             }
-
-            //if it's a file
-            if ( recordField.getFile(  ) != null )
+            else if ( recordField.getEntry(  ) instanceof fr.paris.lutece.plugins.directory.business.EntryTypeFile &&
+                    ( recordField.getFile(  ) != null ) && ( recordField.getFile(  ).getTitle(  ) != null ) )
             {
                 strNewValue = recordField.getFile(  ).getTitle(  );
             }
 
-            if ( ( strOldValue != null ) && ( strNewValue != null ) &&
-                    ( !strOldValue.equals( WorkflowUtils.EMPTY_STRING ) ) )
+            recordField.setEntry( EntryHome.findByPrimaryKey( recordField.getEntry(  ).getIdEntry(  ), directoryPlugin ) );
+
+            String strKey = MARK_ENTRY_MARKER + recordField.getEntry(  ).getIdEntry(  );
+            String strOldValue = ( (String) model.get( strKey ) );
+
+            if ( StringUtils.isNotBlank( strOldValue ) && StringUtils.isNotBlank( strNewValue ) )
             {
-                //add markers for message
+                // Add markers for message
                 model.put( strKey, strNewValue + CONSTANT_COMMA + strOldValue );
             }
             else if ( strNewValue != null )
