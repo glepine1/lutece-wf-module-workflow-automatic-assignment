@@ -6,10 +6,13 @@
  	<bean id="automaticAssignmentDAO"  class="fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.business.AutomaticAssignmentDAO"/>
 	
 	<bean id="workflow-automatic-assignment.taskAutomaticAssignment" class="fr.paris.lutece.plugins.workflow.business.task.TaskType" >
-			<property name="key" value="taskAutomaticAssignment"/>
-     		 <property name="titleI18nKey" value="module.workflow.taskautomaticassignment.task_title" />
-    		 <property name="className" value="fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.business.TaskAutomaticAssignment"/>
-   	  </bean>
+		<property name="key" value="taskAutomaticAssignment"/>
+     	<property name="titleI18nKey" value="module.workflow.taskautomaticassignment.task_title" />
+		<property name="className" value="fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.business.TaskAutomaticAssignment"/>
+	</bean>
+	
+	<!-- Services -->
+	<bean id="workflow-automatic-assignment.automaticAssignmentService" class="fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.service.AutomaticAssignmentService" />
  </beans>
  
  	

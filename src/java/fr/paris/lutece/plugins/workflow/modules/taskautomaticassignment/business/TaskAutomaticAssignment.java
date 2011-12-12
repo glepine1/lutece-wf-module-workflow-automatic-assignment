@@ -53,6 +53,7 @@ import fr.paris.lutece.plugins.workflow.modules.taskassignment.business.Assignme
 import fr.paris.lutece.plugins.workflow.modules.taskassignment.business.WorkgroupConfig;
 import fr.paris.lutece.plugins.workflow.modules.taskassignment.business.WorkgroupConfigHome;
 import fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.service.AutomaticAssignmentPlugin;
+import fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.service.AutomaticAssignmentService;
 import fr.paris.lutece.plugins.workflow.service.WorkflowPlugin;
 import fr.paris.lutece.plugins.workflow.utils.WorkflowUtils;
 import fr.paris.lutece.portal.business.mailinglist.MailingList;
@@ -72,6 +73,7 @@ import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
+import fr.paris.lutece.util.mail.FileAttachment;
 import fr.paris.lutece.util.url.UrlItem;
 import fr.paris.lutece.util.xml.XmlUtil;
 
@@ -110,6 +112,7 @@ public class TaskAutomaticAssignment extends Task
     private static final String MARK_WEBAPP_URL = "webapp_url";
     private static final String MARK_LOCALE = "locale";
     private static final String MARK_LINK_VIEW_RECORD = "link_view_record";
+    private static final String MARK_LIST_ENTRIES_FILE = "list_entries_file";
 
     // Parameters
     private static final String PARAMETER_TITLE = "title";
@@ -126,6 +129,7 @@ public class TaskAutomaticAssignment extends Task
     private static final String PARAMETER_LABEL_LINK_VIEW_RECORD = "label_link_view_record";
     private static final String PARAMETER_RECIPIENTS_CC = "recipients_cc";
     private static final String PARAMETER_RECIPIENTS_BCC = "recipients_bcc";
+    private static final String PARAMETER_LIST_POSITION_ENTRY_FILE_CHECKED = "list_position_entry_file_checked";
 
     // Properties
     private static final String FIELD_TITLE = "module.workflow.taskautomaticassignment.task_config.label_title";
@@ -136,7 +140,6 @@ public class TaskAutomaticAssignment extends Task
     private static final String PROPERTY_IS_SELECTABLE_ENTRY_CHECKBOX = "workflow-automatic-assignment.selectable_entry.checkbox";
     private static final String PROPERTY_IS_SELECTABLE_ENTRY_RADIO = "workflow-automatic-assignment.selectable_entry.radio";
     private static final String PROPERTY_IS_SELECTABLE_ENTRY_SELECT = "workflow-automatic-assignment.selectable_entry.select";
-    private static final String PROPERTY_ENTRY_TYPE_GEOLOCATION = "directory.entry_type.geolocation";
     private static final String PROPERTY_LUTECE_BASE_URL = "lutece.base.url";
     private static final String PROPERTY_LUTECE_PROD_URL = "lutece.prod.url";
 
@@ -193,6 +196,7 @@ public class TaskAutomaticAssignment extends Task
         String strLabelLinkViewRecord = request.getParameter( PARAMETER_LABEL_LINK_VIEW_RECORD );
         String strRecipientsCc = request.getParameter( PARAMETER_RECIPIENTS_CC );
         String strRecipientsBcc = request.getParameter( PARAMETER_RECIPIENTS_BCC );
+        String[] tabSelectedPositionsEntryFile = request.getParameterValues( PARAMETER_LIST_POSITION_ENTRY_FILE_CHECKED );
         int nIdDirectory = -1;
 
         Plugin autoAssignPlugin = PluginService.getPlugin( AutomaticAssignmentPlugin.PLUGIN_NAME );
@@ -304,6 +308,18 @@ public class TaskAutomaticAssignment extends Task
             }
         }
 
+        if ( ( tabSelectedPositionsEntryFile != null ) && ( tabSelectedPositionsEntryFile.length > 0 ) )
+        {
+            List<Integer> listSelectedPositionEntryFile = new ArrayList<Integer>(  );
+
+            for ( int i = 0; i < tabSelectedPositionsEntryFile.length; i++ )
+            {
+                listSelectedPositionEntryFile.add( WorkflowUtils.convertStringToInt( tabSelectedPositionsEntryFile[i] ) );
+            }
+
+            config.setListPositionsEntryFile( listSelectedPositionEntryFile );
+        }
+
         if ( bCreate )
         {
             TaskAutomaticAssignmentConfigHome.create( config, autoAssignPlugin, workflowPlugin );
@@ -330,6 +346,7 @@ public class TaskAutomaticAssignment extends Task
      */
     public String getDisplayConfigForm( HttpServletRequest request, Plugin workflowPlugin, Locale locale )
     {
+        AutomaticAssignmentService autoAssignService = AutomaticAssignmentService.getService(  );
         Plugin autoAssignPlugin = PluginService.getPlugin( AutomaticAssignmentPlugin.PLUGIN_NAME );
         Plugin directoryPlugin = PluginService.getPlugin( DirectoryPlugin.PLUGIN_NAME );
 
@@ -415,6 +432,7 @@ public class TaskAutomaticAssignment extends Task
         model.put( MARK_MAILING_LIST, refMailingList );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_LOCALE, locale );
+        model.put( MARK_LIST_ENTRIES_FILE, autoAssignService.getListEntriesFile( getId(  ), locale ) );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_TASK_AUTO_ASSIGNMENT_CONFIG, locale, model );
 
@@ -625,6 +643,8 @@ public class TaskAutomaticAssignment extends Task
         String strEmailContent = buildMailHtml( model, locale );
         String strSubject = buildSubjectHtml( config, model, locale );
 
+        List<FileAttachment> listFileAttachments = getListFileAttachments( config, resourceHistory );
+
         // Notify the mailings list associated to each workgroup
         for ( String workGroup : listWorkgroup )
         {
@@ -646,9 +666,17 @@ public class TaskAutomaticAssignment extends Task
                 // Send Mail
                 for ( Recipient recipient : listRecipients )
                 {
-                    // Build the mail message
-                    MailService.sendMailHtml( recipient.getEmail(  ), strSenderName, strSenderEmail, strSubject,
-                        strEmailContent );
+                    if ( ( listFileAttachments != null ) && !listFileAttachments.isEmpty(  ) )
+                    {
+                        MailService.sendMailMultipartHtml( recipient.getEmail(  ), null, null, strSenderName,
+                            strSenderEmail, strSubject, strEmailContent, null, listFileAttachments );
+                    }
+                    else
+                    {
+                        // Build the mail message
+                        MailService.sendMailHtml( recipient.getEmail(  ), strSenderName, strSenderEmail, strSubject,
+                            strEmailContent );
+                    }
                 }
             }
         }
@@ -659,8 +687,16 @@ public class TaskAutomaticAssignment extends Task
 
         if ( bHasRecipients )
         {
-            MailService.sendMailHtml( null, config.getRecipientsCc(  ), config.getRecipientsBcc(  ),
-                config.getSenderName(  ), strSenderEmail, strSubject, strEmailContent );
+            if ( ( listFileAttachments != null ) && !listFileAttachments.isEmpty(  ) )
+            {
+                MailService.sendMailMultipartHtml( null, config.getRecipientsCc(  ), config.getRecipientsBcc(  ),
+                    strSenderName, strSenderEmail, strSubject, strEmailContent, null, listFileAttachments );
+            }
+            else
+            {
+                MailService.sendMailHtml( null, config.getRecipientsCc(  ), config.getRecipientsBcc(  ),
+                    config.getSenderName(  ), strSenderEmail, strSubject, strEmailContent );
+            }
         }
     }
 
@@ -688,6 +724,21 @@ public class TaskAutomaticAssignment extends Task
     private String buildSubjectHtml( TaskAutomaticAssignmentConfig config, Map<String, Object> model, Locale locale )
     {
         return AppTemplateService.getTemplateFromStringFtl( config.getSubject(  ), locale, model ).getHtml(  );
+    }
+
+    /**
+     * Get the list of file attachments
+     * @param config the config
+     * @param resourceHistory the resource history
+     * @return a list of file attachments
+     */
+    private List<FileAttachment> getListFileAttachments( TaskAutomaticAssignmentConfig config,
+        ResourceHistory resourceHistory )
+    {
+        AutomaticAssignmentService autoAssignService = AutomaticAssignmentService.getService(  );
+
+        return autoAssignService.getFilesAttachment( config, resourceHistory.getIdResource(  ),
+            config.getIdDirectory(  ) );
     }
 
     /**

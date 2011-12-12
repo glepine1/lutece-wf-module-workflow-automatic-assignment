@@ -77,6 +77,14 @@ public final class TaskAutomaticAssignmentConfigHome
                 WorkgroupConfigHome.create( workgroupConfig, workflowPlugin );
             }
         }
+
+        if ( config.getListPositionsEntryFile(  ) != null )
+        {
+            for ( Integer nPositionEntryFile : config.getListPositionsEntryFile(  ) )
+            {
+                _dao.insertListPositionsEntryFile( config.getIdTask(  ), nPositionEntryFile, autoAssignmentPlugin );
+            }
+        }
     }
 
     /**
@@ -101,6 +109,16 @@ public final class TaskAutomaticAssignmentConfigHome
                 WorkgroupConfigHome.create( workgroupConfig, workflowPlugin );
             }
         }
+
+        _dao.deleteListPositionsEntryFile( config.getIdTask(  ), autoAssignmentPlugin );
+
+        if ( config.getListPositionsEntryFile(  ) != null )
+        {
+            for ( Integer nPositionEntryFile : config.getListPositionsEntryFile(  ) )
+            {
+                _dao.insertListPositionsEntryFile( config.getIdTask(  ), nPositionEntryFile, autoAssignmentPlugin );
+            }
+        }
     }
 
     /**
@@ -113,6 +131,7 @@ public final class TaskAutomaticAssignmentConfigHome
     public static void remove( int nIdTask, Plugin autoAssignmentPlugin, Plugin workflowPlugin )
     {
         WorkgroupConfigHome.removeByTask( nIdTask, workflowPlugin );
+        _dao.deleteListPositionsEntryFile( nIdTask, autoAssignmentPlugin );
         _dao.delete( nIdTask, autoAssignmentPlugin );
     }
 
@@ -134,6 +153,7 @@ public final class TaskAutomaticAssignmentConfigHome
         if ( config != null )
         {
             config.setWorkgroups( WorkgroupConfigHome.getListByConfig( nIdTask, workflowPlugin ) );
+            config.setListPositionsEntryFile( _dao.loadListPositionsEntryFile( nIdTask, autoAssignmentPlugin ) );
         }
 
         return config;

@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS workflow_auto_assignment;
 DROP TABLE IF EXISTS workflow_auto_assignment_cf;
+DROP TABLE IF EXISTS workflow_auto_assignment_ef;
 
 /*==============================================================*/
 /* Table structure for table workflow_auto_assignment			*/
@@ -11,7 +12,7 @@ CREATE TABLE  workflow_auto_assignment (
   value INT  NOT NULL ,
   workgroup_key varchar(255) NOT NULL,
   PRIMARY KEY  (id_task,id_entry,value,workgroup_key)
-) ;
+);
 
 /*==============================================================*/
 /* Table structure for table workflow_auto_assignment_cf		*/
@@ -30,4 +31,13 @@ CREATE TABLE  workflow_auto_assignment_cf (
   recipients_cc VARCHAR(255) DEFAULT '' NOT NULL,
   recipients_bcc VARCHAR(255) DEFAULT '' NOT NULL,
   PRIMARY KEY  (id_task)
-) ;
+);
+
+/*==============================================================*/
+/* Table structure for table workflow_auto_assignment_ef		*/
+/*==============================================================*/
+CREATE TABLE workflow_auto_assignment_ef(
+  id_task INT DEFAULT NULL,
+  position_directory_entry_file INT DEFAULT NULL,
+  PRIMARY KEY (id_task, position_directory_entry_file)
+);

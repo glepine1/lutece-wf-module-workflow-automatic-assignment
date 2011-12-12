@@ -36,6 +36,9 @@ package fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.busines
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  *
@@ -52,6 +55,11 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
         "SET id_task=?,id_directory=?, title=?, is_notify=?, message = ?, subject = ?, sender_name = ?, is_view_record = ?, label_link_view_record = ?, recipients_cc = ?, recipients_bcc = ? " +
         " WHERE id_task=? ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM workflow_auto_assignment_cf  WHERE id_task=? ";
+    private static final String SQL_QUERY_DELETE_POSITION_ENTRY_FILE = " DELETE FROM workflow_auto_assignment_ef where id_task= ? ";
+    private static final String SQL_QUERY_INSERT_POSITION_ENTRY_FILE = " INSERT INTO workflow_auto_assignment_ef( " +
+        " id_task,position_directory_entry_file) VALUES ( ?,? ) ";
+    private static final String SQL_QUERY_FIND_LIST_POSITION_ENTRY_FILE = "SELECT position_directory_entry_file " +
+        " FROM workflow_auto_assignment_ef WHERE id_task = ? ";
 
     /**
      * {@inheritDoc}
@@ -148,6 +156,51 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
 
         daoUtil.setInt( 1, nIdTask );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Integer> loadListPositionsEntryFile( int nIdTask, Plugin plugin )
+    {
+        List<Integer> listIntegerPositionEntryFile = new ArrayList<Integer>(  );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_LIST_POSITION_ENTRY_FILE, plugin );
+        daoUtil.setInt( 1, nIdTask );
+        daoUtil.executeQuery(  );
+
+        while ( daoUtil.next(  ) )
+        {
+            listIntegerPositionEntryFile.add( daoUtil.getInt( 1 ) );
+        }
+
+        daoUtil.free(  );
+
+        return listIntegerPositionEntryFile;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void deleteListPositionsEntryFile( int nIdTask, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_POSITION_ENTRY_FILE, plugin );
+
+        daoUtil.setInt( 1, nIdTask );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void insertListPositionsEntryFile( int nIdTask, Integer nPositionEntryFile, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_POSITION_ENTRY_FILE, plugin );
+
+        daoUtil.setInt( 1, nIdTask );
+        daoUtil.setInt( 2, nPositionEntryFile );
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
     }

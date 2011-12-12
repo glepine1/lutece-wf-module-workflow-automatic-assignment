@@ -59,6 +59,7 @@ public class TaskAutomaticAssignmentConfig
     private String _strLabelLinkViewRecord;
     private String _strRecipientsCc;
     private String _strRecipientsBcc;
+    private List<Integer> _listPositionsEntryFile;
 
     /**
      * Get the id task
@@ -292,5 +293,23 @@ public class TaskAutomaticAssignmentConfig
     public void setRecipientsBcc( String strRecipient )
     {
         _strRecipientsBcc = strRecipient;
+    }
+
+    /**
+     * Set the list of entry file which must be include in mail attachments
+     * @param listPositionsEntryFile list of entry file which must be include in mail attachments
+     */
+    public void setListPositionsEntryFile( List<Integer> listPositionsEntryFile )
+    {
+        _listPositionsEntryFile = listPositionsEntryFile;
+    }
+
+    /**
+     * Get the list of entry file which must be include in mail attachments
+     * @return the list of entry file which must be include in mail attachments
+     */
+    public List<Integer> getListPositionsEntryFile(  )
+    {
+        return _listPositionsEntryFile;
     }
 }

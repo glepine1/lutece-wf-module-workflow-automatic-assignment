@@ -1,5 +1,16 @@
 <#include "/admin/util/editor/editor.html" />
 
+<#function isSelected entry default_values >
+	<#if default_values?has_content>
+		<#list default_values as default_value>
+			<#if default_value=entry>  		
+  				<#return true>
+  			</#if>
+  		</#list>
+	</#if>
+ <#return false>
+</#function>
+
 <div>
 	<h2> #i18n{module.workflow.taskautomaticassignment.task_config.title}</h2> 	
 	  	<p>
@@ -165,6 +176,31 @@
 				 	<br />
 		 		</div>
 		 	</#if>
+		 	<#if list_entries_file?? && list_entries_file?has_content>
+		 		<div class="highlight-box">
+		 			<h2>#i18n{module.workflow.taskautomaticassignment.task_config.label_entry_file}</h2>
+		 			<table>
+				  		<tr>
+				  			<th>#i18n{module.workflow.taskautomaticassignment.task_config.label_file_checked}</th>
+				  			<th>#i18n{module.workflow.taskautomaticassignment.task_config.label_file_name}</th>
+				  		</tr>
+					 	<#list list_entries_file as entry>
+						  	<tr>
+						  		<td>
+						  			<input type="checkbox" id="list_position_entry_file_checked" name="list_position_entry_file_checked" value="${entry.position}"
+						  				<#if ( config.listPositionsEntryFile?? && config.listPositionsEntryFile?has_content && isSelected( entry.position, config.listPositionsEntryFile ))>
+											checked="checked" 
+										</#if>
+						  			 />
+						  		</td>
+						  		<td>
+						  			${entry.title}
+						  		</td>
+						  	</tr>
+						  </#list>
+					</table>
+		 		</div>
+			</#if>
 		 	<p>
 				<label for="view_record">#i18n{module.workflow.taskautomaticassignment.task_config.label_view_record} :</label>
 				<input type="checkbox" name="view_record" id="view_record" value="1" 
