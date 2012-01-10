@@ -266,7 +266,7 @@ public final class AutomaticAssignmentService
                 {
                     file = listRecordFields.get( 0 ).getFile(  );
 
-                    if ( file.getPhysicalFile(  ) != null )
+                    if ( ( file != null ) && ( file.getPhysicalFile(  ) != null ) )
                     {
                         file.setPhysicalFile( PhysicalFileHome.findByPrimaryKey( 
                                 file.getPhysicalFile(  ).getIdPhysicalFile(  ), pluginDirectory ) );
