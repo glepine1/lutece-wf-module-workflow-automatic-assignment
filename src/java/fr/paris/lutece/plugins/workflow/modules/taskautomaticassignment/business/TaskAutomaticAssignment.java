@@ -140,6 +140,7 @@ public class TaskAutomaticAssignment extends Task
     private static final String PROPERTY_IS_SELECTABLE_ENTRY_CHECKBOX = "workflow-automatic-assignment.selectable_entry.checkbox";
     private static final String PROPERTY_IS_SELECTABLE_ENTRY_RADIO = "workflow-automatic-assignment.selectable_entry.radio";
     private static final String PROPERTY_IS_SELECTABLE_ENTRY_SELECT = "workflow-automatic-assignment.selectable_entry.select";
+    private static final String PROPERTY_LUTECE_ADMIN_PROD_URL = "lutece.admin.prod.url";
     private static final String PROPERTY_LUTECE_BASE_URL = "lutece.base.url";
     private static final String PROPERTY_LUTECE_PROD_URL = "lutece.prod.url";
 
@@ -607,11 +608,16 @@ public class TaskAutomaticAssignment extends Task
         }
         else
         {
-            strBaseUrl = AppPropertiesService.getProperty( PROPERTY_LUTECE_BASE_URL );
+            strBaseUrl = AppPropertiesService.getProperty( PROPERTY_LUTECE_ADMIN_PROD_URL );
 
             if ( StringUtils.isBlank( strBaseUrl ) )
             {
-                strBaseUrl = AppPropertiesService.getProperty( PROPERTY_LUTECE_PROD_URL );
+                strBaseUrl = AppPropertiesService.getProperty( PROPERTY_LUTECE_BASE_URL );
+
+                if ( StringUtils.isBlank( strBaseUrl ) )
+                {
+                    strBaseUrl = AppPropertiesService.getProperty( PROPERTY_LUTECE_PROD_URL );
+                }
             }
         }
 
