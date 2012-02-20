@@ -272,7 +272,7 @@ public final class AutomaticAssignmentService
                     {
                         File file = recordField.getFile(  );
 
-                        if ( file.getPhysicalFile(  ) != null )
+                        if ( ( file != null ) && ( file.getPhysicalFile(  ) != null ) )
                         {
                             file.setPhysicalFile( PhysicalFileHome.findByPrimaryKey( 
                                     file.getPhysicalFile(  ).getIdPhysicalFile(  ), pluginDirectory ) );
@@ -282,7 +282,11 @@ public final class AutomaticAssignmentService
                     else if ( entry instanceof fr.paris.lutece.plugins.directory.business.EntryTypeDownloadUrl )
                     {
                         File file = DirectoryUtils.doDownloadFile( recordField.getValue(  ) );
-                        listFiles.add( file );
+
+                        if ( file != null )
+                        {
+                            listFiles.add( file );
+                        }
                     }
                 }
 
