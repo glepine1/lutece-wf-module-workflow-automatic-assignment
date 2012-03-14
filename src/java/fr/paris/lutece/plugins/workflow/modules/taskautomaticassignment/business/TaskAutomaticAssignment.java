@@ -320,6 +320,10 @@ public class TaskAutomaticAssignment extends Task
 
             config.setListPositionsEntryFile( listSelectedPositionEntryFile );
         }
+        else
+        {
+            config.setListPositionsEntryFile( null );
+        }
 
         if ( bCreate )
         {
