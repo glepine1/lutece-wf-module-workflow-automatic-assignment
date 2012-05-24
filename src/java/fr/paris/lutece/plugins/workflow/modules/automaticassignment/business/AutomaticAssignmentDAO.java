@@ -31,7 +31,7 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.business;
+package fr.paris.lutece.plugins.workflow.modules.automaticassignment.business;
 
 import fr.paris.lutece.plugins.directory.business.Entry;
 import fr.paris.lutece.plugins.directory.business.IEntry;
@@ -44,7 +44,7 @@ import java.util.List;
 
 /**
  *
- *class   TaskAssignmentConfigDAO
+ * AutomaticAssignmentDAO
  *
  */
 public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
@@ -68,11 +68,9 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
     private static final String CONSTANT_ID_ENTRY = "id_entry";
 
     /**
-     * Check if an assignment already exist
-     * @param assign the assignment to check
-     * @param plugin the plugin
-     * @return true if exists
+     * {@inheritDoc}
      */
+    @Override
     public boolean checkExist( AutomaticAssignment assign, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_CHECK_EXIST, plugin );
@@ -100,11 +98,9 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
     }
 
     /**
-     * Delete an automatic assignment
-     * @param assign the assignment to delete
-     * @param plugin the plugin
-     *
+     * {@inheritDoc}
      */
+    @Override
     public void delete( AutomaticAssignment assign, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
@@ -119,11 +115,9 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
     }
 
     /**
-     * Delete all automatic assignment linked to a task
-     * @param nIdTask the task id
-     * @param plugin the plugin
-     *
+     * {@inheritDoc}
      */
+    @Override
     public void deleteByTask( int nIdTask, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_TASK, plugin );
@@ -135,12 +129,10 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
     }
 
     /**
-     * Create a new automatic assignment
-     * @param assign the assignment to create
-     * @param plugin the plugin
-     *
+     * {@inheritDoc}
      */
-    public void insert( AutomaticAssignment assign, Plugin plugin )
+    @Override
+    public synchronized void insert( AutomaticAssignment assign, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
 
@@ -156,12 +148,9 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
     }
 
     /**
-     * Return a list of assignment with the same task and entry
-     * @param nIdTask the task id
-     * @param nIdEntry the entry id
-     * @param plugin the plugin
-     * @return assignmentList the list of automatic assignment
+     * {@inheritDoc}
      */
+    @Override
     public List<AutomaticAssignment> loadByTaskByEntry( int nIdTask, int nIdEntry, Plugin plugin )
     {
         List<AutomaticAssignment> assignmentList = new ArrayList<AutomaticAssignment>(  );
@@ -192,11 +181,9 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
     }
 
     /**
-     * Return a list of assignment with the same task
-     * @param nIdTask the task id
-     * @param plugin the plugin
-     * @return assignmentList the list of automatic assignment
+     * {@inheritDoc}
      */
+    @Override
     public List<AutomaticAssignment> loadByTask( int nIdTask, Plugin plugin )
     {
         List<AutomaticAssignment> assignmentList = new ArrayList<AutomaticAssignment>(  );
@@ -227,11 +214,9 @@ public class AutomaticAssignmentDAO implements IAutomaticAssignmentDAO
     }
 
     /**
-     * Return a list of id from entries with the same task
-     * @param nIdTask the task id
-     * @param plugin the plugin
-     * @return idEntriesList the list of entries id
+     * {@inheritDoc}
      */
+    @Override
     public List<Integer> getIdEntriesListByTask( int nIdTask, Plugin plugin )
     {
         List<Integer> idEntriesList = new ArrayList<Integer>(  );

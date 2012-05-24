@@ -1,18 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
 
-<beans>
- 	<bean id="taskAutomaticAssignmentConfigDAO"  class="fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.business.TaskAutomaticAssignmentConfigDAO"/>
- 	<bean id="automaticAssignmentDAO"  class="fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.business.AutomaticAssignmentDAO"/>
+	<!-- Transaction Manager -->
+	<bean id="workflow-automaticassignment.transactionManager" class="fr.paris.lutece.portal.service.database.DAOUtilTransactionManager"
+		p:pluginName="workflow-automaticassignment" />
 	
-	<bean id="workflow-automatic-assignment.taskAutomaticAssignment" class="fr.paris.lutece.plugins.workflow.business.task.TaskType" >
-		<property name="key" value="taskAutomaticAssignment"/>
-     	<property name="titleI18nKey" value="module.workflow.taskautomaticassignment.task_title" />
-		<property name="className" value="fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.business.TaskAutomaticAssignment"/>
-	</bean>
+	<!-- DAO -->
+ 	<bean id="workflow-automaticassignment.taskAutomaticAssignmentConfigDAO" class="fr.paris.lutece.plugins.workflow.modules.automaticassignment.business.TaskAutomaticAssignmentConfigDAO" />
+ 	<bean id="workflow-automaticassignment.automaticAssignmentDAO" class="fr.paris.lutece.plugins.workflow.modules.automaticassignment.business.AutomaticAssignmentDAO"/>
+	
+	<!-- Task -->
+	<bean id="workflow-automaticassignment.taskTypeAutomaticAssignment" class="fr.paris.lutece.plugins.workflowcore.business.task.TaskType"
+		p:key="taskAutomaticAssignment"
+		p:titleI18nKey="module.workflow.automaticassignment.task_title"
+		p:beanName="workflow-automaticassignment.taskAutomaticAssignment" 
+		p:configRequired="true"
+		p:taskForAutomaticAction="true" />
+	<bean id="workflow-automaticassignment.taskAutomaticAssignment" class="fr.paris.lutece.plugins.workflow.modules.automaticassignment.service.TaskAutomaticAssignment" scope="prototype" />
+	<bean id="workflow-automaticassignment.automaticAssignmentTaskComponent" class="fr.paris.lutece.plugins.workflow.modules.automaticassignment.web.AutomaticAssignmentTaskComponent" 
+		p:taskType-ref="workflow-automaticassignment.taskTypeAutomaticAssignment" />
 	
 	<!-- Services -->
-	<bean id="workflow-automatic-assignment.automaticAssignmentService" class="fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.service.AutomaticAssignmentService" />
+	<bean id="workflow-automaticassignment.automaticAssignmentService" class="fr.paris.lutece.plugins.workflow.modules.automaticassignment.service.AutomaticAssignmentService" />
+	<bean id="workflow-automaticassignment.taskAutomaticAssignmentConfigService" class="fr.paris.lutece.plugins.workflow.modules.automaticassignment.service.TaskAutomaticAssignmentConfigService" />
  </beans>
  
  	

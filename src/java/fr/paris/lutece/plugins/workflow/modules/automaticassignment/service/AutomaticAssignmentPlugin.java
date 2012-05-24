@@ -31,7 +31,7 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.service;
+package fr.paris.lutece.plugins.workflow.modules.automaticassignment.service;
 
 import fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation;
 
@@ -43,12 +43,5 @@ import fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation;
  */
 public class AutomaticAssignmentPlugin extends PluginDefaultImplementation
 {
-    public static final String PLUGIN_NAME = "workflow-automatic-assignment";
-
-    /**
-     * Initialize the module automatic assignment
-     */
-    public void init(  )
-    {
-    }
+    public static final String PLUGIN_NAME = "workflow-automaticassignment";
 }

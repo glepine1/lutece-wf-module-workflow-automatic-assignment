@@ -31,7 +31,7 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.web;
+package fr.paris.lutece.plugins.workflow.modules.automaticassignment.web;
 
 import fr.paris.lutece.plugins.directory.business.Entry;
 import fr.paris.lutece.plugins.directory.business.EntryHome;
@@ -39,11 +39,13 @@ import fr.paris.lutece.plugins.directory.business.Field;
 import fr.paris.lutece.plugins.directory.business.FieldHome;
 import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.plugins.directory.service.DirectoryPlugin;
-import fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.business.AutomaticAssignment;
-import fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.business.AutomaticAssignmentHome;
-import fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.business.TaskAutomaticAssignmentConfig;
-import fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.business.TaskAutomaticAssignmentConfigHome;
-import fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.service.AutomaticAssignmentPlugin;
+import fr.paris.lutece.plugins.workflow.modules.automaticassignment.business.AutomaticAssignment;
+import fr.paris.lutece.plugins.workflow.modules.automaticassignment.business.TaskAutomaticAssignmentConfig;
+import fr.paris.lutece.plugins.workflow.modules.automaticassignment.service.AutomaticAssignmentPlugin;
+import fr.paris.lutece.plugins.workflow.modules.automaticassignment.service.AutomaticAssignmentService;
+import fr.paris.lutece.plugins.workflow.modules.automaticassignment.service.IAutomaticAssignmentService;
+import fr.paris.lutece.plugins.workflow.modules.automaticassignment.service.ITaskAutomaticAssignmentConfigService;
+import fr.paris.lutece.plugins.workflow.modules.automaticassignment.service.TaskAutomaticAssignmentConfigService;
 import fr.paris.lutece.plugins.workflow.service.WorkflowPlugin;
 import fr.paris.lutece.portal.business.workgroup.AdminWorkgroup;
 import fr.paris.lutece.portal.business.workgroup.AdminWorkgroupHome;
@@ -51,6 +53,7 @@ import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.web.admin.PluginAdminPageJspBean;
@@ -70,9 +73,9 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
 {
-    private static final String TEMPLATE_MODIFY_ENTRY_ASSIGNMENT = "admin/plugins/workflow/modules/taskautomaticassignment/modify_entry_assignment.html";
+    private static final String TEMPLATE_MODIFY_ENTRY_ASSIGNMENT = "admin/plugins/workflow/modules/automaticassignment/modify_entry_assignment.html";
     private static final String JSP_MODIFY_TASK = "jsp/admin/plugins/workflow/ModifyTask.jsp";
-    private static final String JSP_MODIFY_ENTRY_ASSIGNMENT = "jsp/admin/plugins/workflow/modules/taskautomaticassignment/ModifyEntryAssignment.jsp";
+    private static final String JSP_MODIFY_ENTRY_ASSIGNMENT = "jsp/admin/plugins/workflow/modules/automaticassignment/ModifyEntryAssignment.jsp";
     private static final String PROPERTY_MODIFY_TASK_PAGE_TITLE = "workflow.modify_workflow.page_title";
     private static final String PARAMETER_ID_TASK = "id_task";
     private static final String PARAMETER_ID_ENTRY = "id_entry";
@@ -83,8 +86,12 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
     private static final String PARAMETER_VALUE = "value";
     private static final String PARAMETER_ASSIGNMENT_LIST = "assignment_list";
     private static final String PARAMETER_ID_DIRECTORY = "id_directory";
-    private static final String MESSAGE_ALREADY_EXIST = "module.workflow.taskautomaticassignment.message.modify_entry_assignment.already_exist";
-    private static final String MESSAGE_ERROR_MISSING_FIELD = "module.workflow.taskautomaticassignment.message.missing_field";
+    private static final String MESSAGE_ALREADY_EXIST = "module.workflow.automaticassignment.message.modify_entry_assignment.already_exist";
+    private static final String MESSAGE_ERROR_MISSING_FIELD = "module.workflow.automaticassignment.message.missing_field";
+
+    // SERVICES
+    private IAutomaticAssignmentService _automaticAssignmentService = SpringContextService.getBean( AutomaticAssignmentService.BEAN_SERVICE );
+    private ITaskAutomaticAssignmentConfigService _taskAutomaticAssignmentConfigService = SpringContextService.getBean( TaskAutomaticAssignmentConfigService.BEAN_SERVICE );
 
     /**
      * Get the modify entry assignment page which allow the user to assign a workgroup to a field
@@ -113,7 +120,7 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
             nIdEntry = Integer.parseInt( strIdEntry );
         }
 
-        assignmentList = AutomaticAssignmentHome.findByTaskByEntry( nIdTask, nIdEntry, autoAssignPlugin );
+        assignmentList = _automaticAssignmentService.findByTaskByEntry( nIdTask, nIdEntry, autoAssignPlugin );
         setAssignmentValues( assignmentList, directoryPlugin );
 
         IEntry entry = EntryHome.findByPrimaryKey( nIdEntry, directoryPlugin );
@@ -201,9 +208,9 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
         assign.setIdField( nIdField );
         assign.setWorkgroupKey( strWorkgroup );
 
-        if ( !AutomaticAssignmentHome.checkExist( assign, autoAssignPlugin ) )
+        if ( !_automaticAssignmentService.checkExist( assign, autoAssignPlugin ) )
         {
-            AutomaticAssignmentHome.create( assign, autoAssignPlugin );
+            _automaticAssignmentService.create( assign, autoAssignPlugin );
         }
         else
         {
@@ -227,7 +234,7 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
     {
         Plugin autoAssignPlugin = PluginService.getPlugin( AutomaticAssignmentPlugin.PLUGIN_NAME );
         AutomaticAssignment assignment = getAutomaticAssignment( request );
-        AutomaticAssignmentHome.remove( assignment, autoAssignPlugin );
+        _automaticAssignmentService.remove( assignment, autoAssignPlugin );
 
         UrlItem url = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MODIFY_ENTRY_ASSIGNMENT );
 
@@ -304,14 +311,14 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
             nIdTask = Integer.parseInt( strIdTask );
         }
 
-        TaskAutomaticAssignmentConfig config = TaskAutomaticAssignmentConfigHome.findByPrimaryKey( nIdTask,
+        TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( nIdTask,
                 autoAssignPlugin, workflowPlugin );
         config.setIdDirectory( nIdDirectory );
 
         if ( nIdDirectory != -1 )
         {
-            TaskAutomaticAssignmentConfigHome.update( config, autoAssignPlugin, workflowPlugin );
-            AutomaticAssignmentHome.removeByTask( nIdTask, autoAssignPlugin );
+            _taskAutomaticAssignmentConfigService.update( config, autoAssignPlugin, workflowPlugin );
+            _automaticAssignmentService.removeByTask( nIdTask, autoAssignPlugin );
         }
 
         UrlItem url = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MODIFY_TASK );

@@ -31,7 +31,7 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.business;
+package fr.paris.lutece.plugins.workflow.modules.automaticassignment.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
@@ -64,6 +64,7 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
     /**
      * {@inheritDoc}
      */
+    @Override
     public synchronized void insert( TaskAutomaticAssignmentConfig config, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
@@ -89,6 +90,7 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
     /**
      * {@inheritDoc}
      */
+    @Override
     public void store( TaskAutomaticAssignmentConfig config, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
@@ -116,6 +118,7 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
     /**
      * {@inheritDoc}
      */
+    @Override
     public TaskAutomaticAssignmentConfig load( int nIdTask, Plugin plugin )
     {
         TaskAutomaticAssignmentConfig config = null;
@@ -151,6 +154,7 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
     /**
      * {@inheritDoc}
      */
+    @Override
     public void delete( int nIdTask, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
@@ -163,6 +167,7 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<Integer> loadListPositionsEntryFile( int nIdTask, Plugin plugin )
     {
         List<Integer> listIntegerPositionEntryFile = new ArrayList<Integer>(  );
@@ -183,6 +188,7 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
     /**
      * {@inheritDoc}
      */
+    @Override
     public void deleteListPositionsEntryFile( int nIdTask, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_POSITION_ENTRY_FILE, plugin );
@@ -195,6 +201,7 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
     /**
      * {@inheritDoc}
      */
+    @Override
     public void insertListPositionsEntryFile( int nIdTask, Integer nPositionEntryFile, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_POSITION_ENTRY_FILE, plugin );

@@ -31,66 +31,42 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.business;
+package fr.paris.lutece.plugins.workflow.modules.automaticassignment.business;
 
-import fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.service.AutomaticAssignmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.util.List;
 
 
 /**
- * This class provides instances management methods (create, find, ...) for AutomaticAssignment objects
+ *
+ * IAutomaticAssignmentDAO
+ *
  */
-public final class AutomaticAssignmentHome
+public interface IAutomaticAssignmentDAO
 {
-    // Static variable pointed at the DAO instance
-    private static IAutomaticAssignmentDAO _dao = (IAutomaticAssignmentDAO) SpringContextService.getPluginBean( AutomaticAssignmentPlugin.PLUGIN_NAME,
-            "automaticAssignmentDAO" );
-
     /**
-     * Private constructor - this class need not be instantiated
+     * Create a new automatic assignment
+     * @param assign the assignment to create
+     * @param plugin the plugin
      */
-    private AutomaticAssignmentHome(  )
-    {
-    }
+    void insert( AutomaticAssignment assign, Plugin plugin );
 
     /**
-     * Creation of an instance of assign
-     *
-     * @param assign The instance of AutomaticAssignment
+     * Delete an automatic assignment
+     * @param assign the assignment to delete
      * @param plugin the plugin
      *
      */
-    public static void create( AutomaticAssignment assign, Plugin plugin )
-    {
-        _dao.insert( assign, plugin );
-    }
+    void delete( AutomaticAssignment assign, Plugin plugin );
 
     /**
-     *  remove assign which is specified in parameter
-     *
-     * @param assign The AutomaticAssignment
-     * @param plugin the Plugin
-     *
-     */
-    public static void remove( AutomaticAssignment assign, Plugin plugin )
-    {
-        _dao.delete( assign, plugin );
-    }
-
-    /**
-     *  remove all assign linked to the task
-     *
-     * @param nIdTask The id of the task
-     * @param plugin the Plugin
+     * Delete all automatic assignment linked to a task
+     * @param nIdTask the task id
+     * @param plugin the plugin
      *
      */
-    public static void removeByTask( int nIdTask, Plugin plugin )
-    {
-        _dao.deleteByTask( nIdTask, plugin );
-    }
+    void deleteByTask( int nIdTask, Plugin plugin );
 
     /**
      * Check if an assignment already exist
@@ -98,10 +74,7 @@ public final class AutomaticAssignmentHome
      * @param plugin the plugin
      * @return true if exists
      */
-    public static boolean checkExist( AutomaticAssignment assign, Plugin plugin )
-    {
-        return _dao.checkExist( assign, plugin );
-    }
+    boolean checkExist( AutomaticAssignment assign, Plugin plugin );
 
     /**
      * Return a list of assignment with the same task and entry
@@ -110,10 +83,7 @@ public final class AutomaticAssignmentHome
      * @param plugin the plugin
      * @return assignmentList the list of automatic assignment
      */
-    public static List<AutomaticAssignment> findByTaskByEntry( int nIdTask, int nIdEntry, Plugin plugin )
-    {
-        return _dao.loadByTaskByEntry( nIdTask, nIdEntry, plugin );
-    }
+    List<AutomaticAssignment> loadByTaskByEntry( int nIdTask, int nIdEntry, Plugin plugin );
 
     /**
      * Return a list of assignment with the same task
@@ -121,10 +91,7 @@ public final class AutomaticAssignmentHome
      * @param plugin the plugin
      * @return assignmentList the list of automatic assignment
      */
-    public static List<AutomaticAssignment> findByTask( int nIdTask, Plugin plugin )
-    {
-        return _dao.loadByTask( nIdTask, plugin );
-    }
+    List<AutomaticAssignment> loadByTask( int nIdTask, Plugin plugin );
 
     /**
      * Return a list of id from entries with the same task
@@ -132,8 +99,5 @@ public final class AutomaticAssignmentHome
      * @param plugin the plugin
      * @return idEntriesList the list of entries id
      */
-    public static List<Integer> findAllIdEntriesByTask( int nIdTask, Plugin plugin )
-    {
-        return _dao.getIdEntriesListByTask( nIdTask, plugin );
-    }
+    List<Integer> getIdEntriesListByTask( int nIdTask, Plugin plugin );
 }

@@ -31,7 +31,7 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.business;
+package fr.paris.lutece.plugins.workflow.modules.automaticassignment.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 

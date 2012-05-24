@@ -1,0 +1,57 @@
+
+<div class="content-box">
+  <h2>#i18n{module.workflow.automaticassignment.task_config.label.entry} "${entry.title}"</h2> 	
+	<form action="jsp/admin/plugins/workflow/modules/automaticassignment/DoAddAutomaticAssignment.jsp">  	
+		<input type="hidden" name="id_task" value="${id_task}" />		
+		<#if entry??>
+		<input type="hidden" name="id_entry" value="${entry.idEntry}" />
+	 	<div>
+	 		<label for="value"> #i18n{module.workflow.automaticassignment.modify_entry_assignment.label.value}: </label>		 	
+		 	<select name="value" id="value">
+				<#list entry.fields as field>
+					<option  value="${field.idField}">
+						${field.title}
+					</option>
+				</#list>
+			</select>
+			
+			<span style="font-weight:bold;color:#395E7D;">#i18n{module.workflow.automaticassignment.modify_entry_assignment.label.workgroups}: </span>
+			<select name="workgroup"  id="workgroup">
+				<#list workgroup_list as workgroup>
+					<option  value="${workgroup.key}">
+						${workgroup.description}
+					</option>
+				</#list>
+			</select>
+			
+			<input type="submit" value="#i18n{module.workflow.automaticassignment.modify_entry_assignment.add_button}" />
+			<br /> <br />
+			<table>
+				<tr>
+					<th>#i18n{module.workflow.automaticassignment.modify_entry_assignment.label.value}</th>
+					<th>#i18n{module.workflow.automaticassignment.modify_entry_assignment.label.workgroups}</th>
+					<th>#i18n{module.workflow.automaticassignment.task_config.label.actions}</th>
+				</tr>
+				<#if assignment_list?? >
+					<#list assignment_list as assignment>
+							<tr>
+								<td>${assignment.fieldValue}</td>
+								<td>${assignment.workgroupDescription}</td>
+								<td> 
+									<a href="jsp/admin/plugins/workflow/modules/automaticassignment/DeleteAssignment.jsp?workgroup=${assignment.workgroupKey}&value=${assignment.idField}&id_task=${id_task}&id_entry=${entry.idEntry}">
+						            	<img src="images/admin/skin/actions/delete.png" class="icon" alt="" title="" />							
+						        	</a>
+						        </td>
+					        </tr>
+					</#list>
+				</#if>
+			</table>
+			<br /> <br />
+		</div>
+		</#if>
+	</form>
+	<form action="${url}">
+		<input type="hidden" name="id_task" value="${id_task}" />
+		<input type="submit" value="#i18n{module.workflow.automaticassignment.modify_entry_assignment.back_button}">
+	</form>
+</div>

@@ -31,10 +31,10 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.workflow.modules.taskautomaticassignment.business;
+package fr.paris.lutece.plugins.workflow.modules.automaticassignment.business;
 
 import fr.paris.lutece.plugins.directory.business.IEntry;
-import fr.paris.lutece.plugins.workflow.modules.taskassignment.business.WorkgroupConfig;
+import fr.paris.lutece.plugins.workflow.modules.assignment.business.WorkgroupConfig;
 
 import java.util.List;
 
