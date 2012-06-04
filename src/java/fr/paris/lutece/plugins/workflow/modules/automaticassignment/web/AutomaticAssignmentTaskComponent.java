@@ -45,8 +45,8 @@ import fr.paris.lutece.plugins.workflow.modules.automaticassignment.service.IAut
 import fr.paris.lutece.plugins.workflow.modules.automaticassignment.service.ITaskAutomaticAssignmentConfigService;
 import fr.paris.lutece.plugins.workflow.service.WorkflowPlugin;
 import fr.paris.lutece.plugins.workflow.utils.WorkflowUtils;
-import fr.paris.lutece.plugins.workflow.web.task.NoFormTaskComponent;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITask;
+import fr.paris.lutece.plugins.workflowcore.web.task.NoFormTaskComponent;
 import fr.paris.lutece.portal.business.mailinglist.MailingList;
 import fr.paris.lutece.portal.business.mailinglist.MailingListHome;
 import fr.paris.lutece.portal.business.workgroup.AdminWorkgroup;
