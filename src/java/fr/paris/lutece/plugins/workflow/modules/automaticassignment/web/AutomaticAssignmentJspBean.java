@@ -44,9 +44,8 @@ import fr.paris.lutece.plugins.workflow.modules.automaticassignment.business.Tas
 import fr.paris.lutece.plugins.workflow.modules.automaticassignment.service.AutomaticAssignmentPlugin;
 import fr.paris.lutece.plugins.workflow.modules.automaticassignment.service.AutomaticAssignmentService;
 import fr.paris.lutece.plugins.workflow.modules.automaticassignment.service.IAutomaticAssignmentService;
-import fr.paris.lutece.plugins.workflow.modules.automaticassignment.service.ITaskAutomaticAssignmentConfigService;
 import fr.paris.lutece.plugins.workflow.modules.automaticassignment.service.TaskAutomaticAssignmentConfigService;
-import fr.paris.lutece.plugins.workflow.service.WorkflowPlugin;
+import fr.paris.lutece.plugins.workflowcore.service.config.ITaskConfigService;
 import fr.paris.lutece.portal.business.workgroup.AdminWorkgroup;
 import fr.paris.lutece.portal.business.workgroup.AdminWorkgroupHome;
 import fr.paris.lutece.portal.service.message.AdminMessage;
@@ -91,7 +90,7 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
 
     // SERVICES
     private IAutomaticAssignmentService _automaticAssignmentService = SpringContextService.getBean( AutomaticAssignmentService.BEAN_SERVICE );
-    private ITaskAutomaticAssignmentConfigService _taskAutomaticAssignmentConfigService = SpringContextService.getBean( TaskAutomaticAssignmentConfigService.BEAN_SERVICE );
+    private ITaskConfigService _taskAutomaticAssignmentConfigService = SpringContextService.getBean( TaskAutomaticAssignmentConfigService.BEAN_SERVICE );
 
     /**
      * Get the modify entry assignment page which allow the user to assign a workgroup to a field
@@ -299,7 +298,6 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
         int nIdDirectory = -1;
         int nIdTask = -1;
         Plugin autoAssignPlugin = PluginService.getPlugin( AutomaticAssignmentPlugin.PLUGIN_NAME );
-        Plugin workflowPlugin = PluginService.getPlugin( WorkflowPlugin.PLUGIN_NAME );
 
         if ( strIdDirectory != null )
         {
@@ -311,13 +309,12 @@ public class AutomaticAssignmentJspBean extends PluginAdminPageJspBean
             nIdTask = Integer.parseInt( strIdTask );
         }
 
-        TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( nIdTask,
-                autoAssignPlugin, workflowPlugin );
+        TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( nIdTask );
         config.setIdDirectory( nIdDirectory );
 
         if ( nIdDirectory != -1 )
         {
-            _taskAutomaticAssignmentConfigService.update( config, autoAssignPlugin, workflowPlugin );
+            _taskAutomaticAssignmentConfigService.update( config );
             _automaticAssignmentService.removeByTask( nIdTask, autoAssignPlugin );
         }
 

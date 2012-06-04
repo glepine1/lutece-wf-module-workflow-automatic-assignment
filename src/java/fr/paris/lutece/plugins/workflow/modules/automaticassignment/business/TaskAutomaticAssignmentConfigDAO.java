@@ -33,7 +33,7 @@
  */
 package fr.paris.lutece.plugins.workflow.modules.automaticassignment.business;
 
-import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.plugins.workflow.modules.automaticassignment.service.AutomaticAssignmentPlugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.util.ArrayList;
@@ -65,9 +65,9 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
      * {@inheritDoc}
      */
     @Override
-    public synchronized void insert( TaskAutomaticAssignmentConfig config, Plugin plugin )
+    public synchronized void insert( TaskAutomaticAssignmentConfig config )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, AutomaticAssignmentPlugin.getPlugin(  ) );
 
         int nPos = 0;
 
@@ -91,9 +91,9 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
      * {@inheritDoc}
      */
     @Override
-    public void store( TaskAutomaticAssignmentConfig config, Plugin plugin )
+    public void store( TaskAutomaticAssignmentConfig config )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, AutomaticAssignmentPlugin.getPlugin(  ) );
 
         int nPos = 0;
 
@@ -119,10 +119,10 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
      * {@inheritDoc}
      */
     @Override
-    public TaskAutomaticAssignmentConfig load( int nIdTask, Plugin plugin )
+    public TaskAutomaticAssignmentConfig load( int nIdTask )
     {
         TaskAutomaticAssignmentConfig config = null;
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, plugin );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, AutomaticAssignmentPlugin.getPlugin(  ) );
 
         daoUtil.setInt( 1, nIdTask );
 
@@ -155,9 +155,9 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
      * {@inheritDoc}
      */
     @Override
-    public void delete( int nIdTask, Plugin plugin )
+    public void delete( int nIdTask )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, AutomaticAssignmentPlugin.getPlugin(  ) );
 
         daoUtil.setInt( 1, nIdTask );
         daoUtil.executeUpdate(  );
@@ -168,10 +168,10 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
      * {@inheritDoc}
      */
     @Override
-    public List<Integer> loadListPositionsEntryFile( int nIdTask, Plugin plugin )
+    public List<Integer> loadListPositionsEntryFile( int nIdTask )
     {
         List<Integer> listIntegerPositionEntryFile = new ArrayList<Integer>(  );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_LIST_POSITION_ENTRY_FILE, plugin );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_LIST_POSITION_ENTRY_FILE, AutomaticAssignmentPlugin.getPlugin(  ) );
         daoUtil.setInt( 1, nIdTask );
         daoUtil.executeQuery(  );
 
@@ -189,9 +189,9 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
      * {@inheritDoc}
      */
     @Override
-    public void deleteListPositionsEntryFile( int nIdTask, Plugin plugin )
+    public void deleteListPositionsEntryFile( int nIdTask )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_POSITION_ENTRY_FILE, plugin );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_POSITION_ENTRY_FILE, AutomaticAssignmentPlugin.getPlugin(  ) );
 
         daoUtil.setInt( 1, nIdTask );
         daoUtil.executeUpdate(  );
@@ -202,9 +202,9 @@ public class TaskAutomaticAssignmentConfigDAO implements ITaskAutomaticAssignmen
      * {@inheritDoc}
      */
     @Override
-    public void insertListPositionsEntryFile( int nIdTask, Integer nPositionEntryFile, Plugin plugin )
+    public void insertListPositionsEntryFile( int nIdTask, Integer nPositionEntryFile )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_POSITION_ENTRY_FILE, plugin );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_POSITION_ENTRY_FILE, AutomaticAssignmentPlugin.getPlugin(  ) );
 
         daoUtil.setInt( 1, nIdTask );
         daoUtil.setInt( 2, nPositionEntryFile );

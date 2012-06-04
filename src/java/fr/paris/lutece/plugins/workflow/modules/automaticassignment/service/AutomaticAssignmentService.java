@@ -54,6 +54,7 @@ import fr.paris.lutece.plugins.workflow.modules.automaticassignment.business.Tas
 import fr.paris.lutece.plugins.workflow.service.WorkflowPlugin;
 import fr.paris.lutece.plugins.workflow.utils.WorkflowUtils;
 import fr.paris.lutece.plugins.workflowcore.business.resource.ResourceHistory;
+import fr.paris.lutece.plugins.workflowcore.service.config.ITaskConfigService;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITask;
 import fr.paris.lutece.portal.business.mailinglist.Recipient;
 import fr.paris.lutece.portal.service.i18n.I18nService;
@@ -81,6 +82,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -131,7 +133,8 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
     @Inject
     private IAutomaticAssignmentDAO _automaticAssignmentDAO;
     @Inject
-    private ITaskAutomaticAssignmentConfigService _taskAutomaticAssignmentConfigService;
+    @Named( TaskAutomaticAssignmentConfigService.BEAN_SERVICE )
+    private ITaskConfigService _taskAutomaticAssignmentConfigService;
     @Inject
     private IAssignmentHistoryService _assignmentHistoryService;
     @Inject
@@ -153,7 +156,7 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
      * {@inheritDoc}
      */
     @Override
-    @Transactional( "workflow-automaticassignment.transactionManager" )
+    @Transactional( AutomaticAssignmentPlugin.BEAN_TRANSACTION_MANAGER )
     public void create( AutomaticAssignment assign, Plugin plugin )
     {
         _automaticAssignmentDAO.insert( assign, plugin );
@@ -163,7 +166,7 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
      * {@inheritDoc}
      */
     @Override
-    @Transactional( "workflow-automaticassignment.transactionManager" )
+    @Transactional( AutomaticAssignmentPlugin.BEAN_TRANSACTION_MANAGER )
     public void remove( AutomaticAssignment assign, Plugin plugin )
     {
         _automaticAssignmentDAO.delete( assign, plugin );
@@ -173,7 +176,7 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
      * {@inheritDoc}
      */
     @Override
-    @Transactional( "workflow-automaticassignment.transactionManager" )
+    @Transactional( AutomaticAssignmentPlugin.BEAN_TRANSACTION_MANAGER )
     public void removeByTask( int nIdTask, Plugin plugin )
     {
         _automaticAssignmentDAO.deleteByTask( nIdTask, plugin );
@@ -241,12 +244,9 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
     @Override
     public List<IEntry> getListEntries( int nIdTask )
     {
-        Plugin pluginAutomaticAssignment = PluginService.getPlugin( AutomaticAssignmentPlugin.PLUGIN_NAME );
         Plugin pluginDirectory = PluginService.getPlugin( DirectoryPlugin.PLUGIN_NAME );
-        Plugin pluginWorkflow = PluginService.getPlugin( WorkflowPlugin.PLUGIN_NAME );
 
-        TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( nIdTask,
-                pluginAutomaticAssignment, pluginWorkflow );
+        TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( nIdTask );
 
         List<IEntry> listEntries = new ArrayList<IEntry>(  );
 

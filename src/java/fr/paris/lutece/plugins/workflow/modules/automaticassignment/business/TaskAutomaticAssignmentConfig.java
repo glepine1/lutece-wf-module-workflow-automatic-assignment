@@ -35,8 +35,12 @@ package fr.paris.lutece.plugins.workflow.modules.automaticassignment.business;
 
 import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.plugins.workflow.modules.assignment.business.WorkgroupConfig;
+import fr.paris.lutece.plugins.workflowcore.business.config.TaskConfig;
 
 import java.util.List;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -44,14 +48,16 @@ import java.util.List;
  * TaskAutomaticAssignmentConfig
  *
  */
-public class TaskAutomaticAssignmentConfig
+public class TaskAutomaticAssignmentConfig extends TaskConfig
 {
+    @NotNull
+    @Min( 1 )
     private int _nIdDirectory;
     private List<IEntry> _entryList;
     private String _strMessage;
     private boolean _bNotify;
     private String _strSubject;
-    private int _nIdTask;
+    @NotNull
     private String _strTitle;
     private String _strSenderName;
     private List<WorkgroupConfig> _workgroups;
@@ -60,24 +66,6 @@ public class TaskAutomaticAssignmentConfig
     private String _strRecipientsCc;
     private String _strRecipientsBcc;
     private List<Integer> _listPositionsEntryFile;
-
-    /**
-     * Get the id task
-     * @return the task id
-     */
-    public int getIdTask(  )
-    {
-        return _nIdTask;
-    }
-
-    /**
-     * Set the id task
-     * @param nIdTask the task id
-     */
-    public void setIdTask( int nIdTask )
-    {
-        _nIdTask = nIdTask;
-    }
 
     /**
      * Get the id directory

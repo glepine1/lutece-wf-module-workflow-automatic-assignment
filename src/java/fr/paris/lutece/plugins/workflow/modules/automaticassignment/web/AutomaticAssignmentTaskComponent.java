@@ -40,13 +40,12 @@ import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.plugins.directory.service.DirectoryPlugin;
 import fr.paris.lutece.plugins.workflow.modules.assignment.business.WorkgroupConfig;
 import fr.paris.lutece.plugins.workflow.modules.automaticassignment.business.TaskAutomaticAssignmentConfig;
-import fr.paris.lutece.plugins.workflow.modules.automaticassignment.service.AutomaticAssignmentPlugin;
 import fr.paris.lutece.plugins.workflow.modules.automaticassignment.service.IAutomaticAssignmentService;
-import fr.paris.lutece.plugins.workflow.modules.automaticassignment.service.ITaskAutomaticAssignmentConfigService;
-import fr.paris.lutece.plugins.workflow.service.WorkflowPlugin;
+import fr.paris.lutece.plugins.workflow.modules.automaticassignment.service.TaskAutomaticAssignmentConfigService;
 import fr.paris.lutece.plugins.workflow.utils.WorkflowUtils;
+import fr.paris.lutece.plugins.workflow.web.task.NoFormTaskComponent;
+import fr.paris.lutece.plugins.workflowcore.service.config.ITaskConfigService;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITask;
-import fr.paris.lutece.plugins.workflowcore.web.task.NoFormTaskComponent;
 import fr.paris.lutece.portal.business.mailinglist.MailingList;
 import fr.paris.lutece.portal.business.mailinglist.MailingListHome;
 import fr.paris.lutece.portal.business.workgroup.AdminWorkgroup;
@@ -71,6 +70,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -138,7 +138,8 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
 
     // SERVICES
     @Inject
-    private ITaskAutomaticAssignmentConfigService _taskAutomaticAssignmentConfigService;
+    @Named( TaskAutomaticAssignmentConfigService.BEAN_SERVICE )
+    private ITaskConfigService _taskAutomaticAssignmentConfigService;
     @Inject
     private IAutomaticAssignmentService _automaticAssignmentService;
 
@@ -163,8 +164,6 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
         String strRecipientsBcc = request.getParameter( PARAMETER_RECIPIENTS_BCC );
         String[] tabSelectedPositionsEntryFile = request.getParameterValues( PARAMETER_LIST_POSITION_ENTRY_FILE_CHECKED );
         int nIdDirectory = -1;
-
-        Plugin autoAssignPlugin = PluginService.getPlugin( AutomaticAssignmentPlugin.PLUGIN_NAME );
 
         if ( ( strTitle == null ) || strTitle.trim(  ).equals( WorkflowUtils.EMPTY_STRING ) )
         {
@@ -204,10 +203,7 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
             nIdDirectory = Integer.parseInt( strIdDirectory );
         }
 
-        Plugin workflowPlugin = PluginService.getPlugin( WorkflowPlugin.PLUGIN_NAME );
-
-        TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( task.getId(  ),
-                autoAssignPlugin, workflowPlugin );
+        TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( task.getId(  ) );
         Boolean bCreate = false;
 
         if ( config == null )
@@ -293,11 +289,11 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
 
         if ( bCreate )
         {
-            _taskAutomaticAssignmentConfigService.create( config, autoAssignPlugin, workflowPlugin );
+            _taskAutomaticAssignmentConfigService.create( config );
         }
         else
         {
-            _taskAutomaticAssignmentConfigService.update( config, autoAssignPlugin, workflowPlugin );
+            _taskAutomaticAssignmentConfigService.update( config );
         }
 
         return null;
@@ -309,17 +305,14 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
     @Override
     public String getDisplayConfigForm( HttpServletRequest request, Locale locale, ITask task )
     {
-        Plugin autoAssignPlugin = PluginService.getPlugin( AutomaticAssignmentPlugin.PLUGIN_NAME );
         Plugin directoryPlugin = PluginService.getPlugin( DirectoryPlugin.PLUGIN_NAME );
-        Plugin workflowPlugin = PluginService.getPlugin( WorkflowPlugin.PLUGIN_NAME );
 
         HashMap<String, Object> model = new HashMap<String, Object>(  );
         ReferenceList directoryRefList = DirectoryHome.getDirectoryList( directoryPlugin );
         List<HashMap<String, Object>> listWorkgroups = new ArrayList<HashMap<String, Object>>(  );
         String strNothing = StringUtils.EMPTY;
 
-        TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( task.getId(  ),
-                autoAssignPlugin, workflowPlugin );
+        TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( task.getId(  ) );
 
         if ( config == null )
         {

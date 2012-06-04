@@ -43,6 +43,7 @@ import fr.paris.lutece.plugins.workflow.modules.automaticassignment.business.Tas
 import fr.paris.lutece.plugins.workflow.service.WorkflowPlugin;
 import fr.paris.lutece.plugins.workflowcore.business.resource.ResourceHistory;
 import fr.paris.lutece.plugins.workflowcore.business.resource.ResourceWorkflow;
+import fr.paris.lutece.plugins.workflowcore.service.config.ITaskConfigService;
 import fr.paris.lutece.plugins.workflowcore.service.resource.IResourceHistoryService;
 import fr.paris.lutece.plugins.workflowcore.service.resource.IResourceWorkflowService;
 import fr.paris.lutece.plugins.workflowcore.service.task.SimpleTask;
@@ -56,6 +57,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -69,7 +71,8 @@ public class TaskAutomaticAssignment extends SimpleTask
 {
     // SERVICES
     @Inject
-    private ITaskAutomaticAssignmentConfigService _taskAutomaticAssignmentConfigService;
+    @Named( TaskAutomaticAssignmentConfigService.BEAN_SERVICE )
+    private ITaskConfigService _taskAutomaticAssignmentConfigService;
     @Inject
     private IAutomaticAssignmentService _automaticAssignmentService;
     @Inject
@@ -117,10 +120,7 @@ public class TaskAutomaticAssignment extends SimpleTask
             }
         }
 
-        Plugin workflowPlugin = PluginService.getPlugin( WorkflowPlugin.PLUGIN_NAME );
-
-        TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( this.getId(  ),
-                autoAssignPlugin, workflowPlugin );
+        TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( this.getId(  ) );
 
         if ( ( config != null ) && config.isNotify(  ) )
         {
@@ -143,7 +143,7 @@ public class TaskAutomaticAssignment extends SimpleTask
         Plugin autoAssignPlugin = PluginService.getPlugin( AutomaticAssignmentPlugin.PLUGIN_NAME );
         Plugin workflowPlugin = PluginService.getPlugin( WorkflowPlugin.PLUGIN_NAME );
         // Remove config
-        _taskAutomaticAssignmentConfigService.remove( this.getId(  ), autoAssignPlugin, workflowPlugin );
+        _taskAutomaticAssignmentConfigService.remove( this.getId(  ) );
         _automaticAssignmentService.removeByTask( this.getId(  ), autoAssignPlugin );
         // Remove task information
         _assignmentHistoryService.removeByTask( this.getId(  ), workflowPlugin );
@@ -166,11 +166,7 @@ public class TaskAutomaticAssignment extends SimpleTask
     @Override
     public String getTitle( Locale locale )
     {
-        Plugin autoAssignPlugin = PluginService.getPlugin( AutomaticAssignmentPlugin.PLUGIN_NAME );
-        Plugin workflowPlugin = PluginService.getPlugin( WorkflowPlugin.PLUGIN_NAME );
-
-        TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( this.getId(  ),
-                autoAssignPlugin, workflowPlugin );
+        TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( this.getId(  ) );
 
         if ( config != null )
         {

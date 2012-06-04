@@ -61,7 +61,7 @@ public interface IAutomaticAssignmentService
     * @param assign The instance of AutomaticAssignment
     * @param plugin the plugin
     */
-    @Transactional( "workflow-automaticassignment.transactionManager" )
+    @Transactional( AutomaticAssignmentPlugin.BEAN_TRANSACTION_MANAGER )
     void create( AutomaticAssignment assign, Plugin plugin );
 
     /**
@@ -69,7 +69,7 @@ public interface IAutomaticAssignmentService
      * @param assign The AutomaticAssignment
      * @param plugin the plugin
      */
-    @Transactional( "workflow-automaticassignment.transactionManager" )
+    @Transactional( AutomaticAssignmentPlugin.BEAN_TRANSACTION_MANAGER )
     void remove( AutomaticAssignment assign, Plugin plugin );
 
     /**
@@ -77,7 +77,7 @@ public interface IAutomaticAssignmentService
      * @param nIdTask The id of the task
      * @param plugin the plugin
      */
-    @Transactional( "workflow-automaticassignment.transactionManager" )
+    @Transactional( AutomaticAssignmentPlugin.BEAN_TRANSACTION_MANAGER )
     void removeByTask( int nIdTask, Plugin plugin );
 
     // CHECKS

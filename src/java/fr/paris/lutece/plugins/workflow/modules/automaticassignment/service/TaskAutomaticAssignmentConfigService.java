@@ -37,7 +37,9 @@ import fr.paris.lutece.plugins.workflow.modules.assignment.business.WorkgroupCon
 import fr.paris.lutece.plugins.workflow.modules.assignment.service.IWorkgroupConfigService;
 import fr.paris.lutece.plugins.workflow.modules.automaticassignment.business.ITaskAutomaticAssignmentConfigDAO;
 import fr.paris.lutece.plugins.workflow.modules.automaticassignment.business.TaskAutomaticAssignmentConfig;
-import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.plugins.workflow.utils.WorkflowUtils;
+import fr.paris.lutece.plugins.workflowcore.business.config.ITaskConfig;
+import fr.paris.lutece.plugins.workflowcore.service.config.TaskConfigService;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,39 +53,43 @@ import javax.inject.Inject;
  * TaskAutomaticAssignmentConfigService
  *
  */
-public class TaskAutomaticAssignmentConfigService implements ITaskAutomaticAssignmentConfigService
+public class TaskAutomaticAssignmentConfigService extends TaskConfigService
 {
     public static final String BEAN_SERVICE = "workflow-automaticassignment.taskAutomaticAssignmentConfigService";
     @Inject
-    private ITaskAutomaticAssignmentConfigDAO _taskAutomaticAssignmentDAO;
-    @Inject
     private IWorkgroupConfigService _workgroupConfigService;
+    @Inject
+    private ITaskAutomaticAssignmentConfigDAO _taskAutomaticAssignmentDAO;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @Transactional( "workflow-automaticassignment.transactionManager" )
-    public void create( TaskAutomaticAssignmentConfig config, Plugin autoAssignmentPlugin, Plugin workflowPlugin )
+    @Transactional( AutomaticAssignmentPlugin.BEAN_TRANSACTION_MANAGER )
+    public void create( ITaskConfig config )
     {
-        _taskAutomaticAssignmentDAO.insert( config, autoAssignmentPlugin );
+        super.create( config );
 
-        List<WorkgroupConfig> listWorkgroups = config.getWorkgroups(  );
+        TaskAutomaticAssignmentConfig autoAssignConfig = getConfigBean( config );
 
-        if ( listWorkgroups != null )
+        if ( autoAssignConfig != null )
         {
-            for ( WorkgroupConfig workgroupConfig : listWorkgroups )
+            List<WorkgroupConfig> listWorkgroups = autoAssignConfig.getWorkgroups(  );
+
+            if ( listWorkgroups != null )
             {
-                _workgroupConfigService.create( workgroupConfig, workflowPlugin );
+                for ( WorkgroupConfig workgroupConfig : listWorkgroups )
+                {
+                    _workgroupConfigService.create( workgroupConfig, WorkflowUtils.getPlugin(  ) );
+                }
             }
-        }
 
-        if ( config.getListPositionsEntryFile(  ) != null )
-        {
-            for ( Integer nPositionEntryFile : config.getListPositionsEntryFile(  ) )
+            if ( autoAssignConfig.getListPositionsEntryFile(  ) != null )
             {
-                _taskAutomaticAssignmentDAO.insertListPositionsEntryFile( config.getIdTask(  ), nPositionEntryFile,
-                    autoAssignmentPlugin );
+                for ( Integer nPositionEntryFile : autoAssignConfig.getListPositionsEntryFile(  ) )
+                {
+                    _taskAutomaticAssignmentDAO.insertListPositionsEntryFile( config.getIdTask(  ), nPositionEntryFile );
+                }
             }
         }
     }
@@ -92,32 +98,36 @@ public class TaskAutomaticAssignmentConfigService implements ITaskAutomaticAssig
      * {@inheritDoc}
      */
     @Override
-    @Transactional( "workflow-automaticassignment.transactionManager" )
-    public void update( TaskAutomaticAssignmentConfig config, Plugin autoAssignmentPlugin, Plugin workflowPlugin )
+    @Transactional( AutomaticAssignmentPlugin.BEAN_TRANSACTION_MANAGER )
+    public void update( ITaskConfig config )
     {
-        _taskAutomaticAssignmentDAO.store( config, autoAssignmentPlugin );
+        super.update( config );
 
         // Update workgroups
-        _workgroupConfigService.removeByTask( config.getIdTask(  ), workflowPlugin );
+        _workgroupConfigService.removeByTask( config.getIdTask(  ), WorkflowUtils.getPlugin(  ) );
 
-        List<WorkgroupConfig> listWorkgroups = config.getWorkgroups(  );
+        TaskAutomaticAssignmentConfig autoAssignConfig = getConfigBean( config );
 
-        if ( listWorkgroups != null )
+        if ( autoAssignConfig != null )
         {
-            for ( WorkgroupConfig workgroupConfig : listWorkgroups )
+            List<WorkgroupConfig> listWorkgroups = autoAssignConfig.getWorkgroups(  );
+
+            if ( listWorkgroups != null )
             {
-                _workgroupConfigService.create( workgroupConfig, workflowPlugin );
+                for ( WorkgroupConfig workgroupConfig : listWorkgroups )
+                {
+                    _workgroupConfigService.create( workgroupConfig, WorkflowUtils.getPlugin(  ) );
+                }
             }
-        }
 
-        _taskAutomaticAssignmentDAO.deleteListPositionsEntryFile( config.getIdTask(  ), autoAssignmentPlugin );
+            _taskAutomaticAssignmentDAO.deleteListPositionsEntryFile( config.getIdTask(  ) );
 
-        if ( config.getListPositionsEntryFile(  ) != null )
-        {
-            for ( Integer nPositionEntryFile : config.getListPositionsEntryFile(  ) )
+            if ( autoAssignConfig.getListPositionsEntryFile(  ) != null )
             {
-                _taskAutomaticAssignmentDAO.insertListPositionsEntryFile( config.getIdTask(  ), nPositionEntryFile,
-                    autoAssignmentPlugin );
+                for ( Integer nPositionEntryFile : autoAssignConfig.getListPositionsEntryFile(  ) )
+                {
+                    _taskAutomaticAssignmentDAO.insertListPositionsEntryFile( config.getIdTask(  ), nPositionEntryFile );
+                }
             }
         }
     }
@@ -126,12 +136,12 @@ public class TaskAutomaticAssignmentConfigService implements ITaskAutomaticAssig
      * {@inheritDoc}
      */
     @Override
-    @Transactional( "workflow-automaticassignment.transactionManager" )
-    public void remove( int nIdTask, Plugin autoAssignmentPlugin, Plugin workflowPlugin )
+    @Transactional( AutomaticAssignmentPlugin.BEAN_TRANSACTION_MANAGER )
+    public void remove( int nIdTask )
     {
-        _workgroupConfigService.removeByTask( nIdTask, workflowPlugin );
-        _taskAutomaticAssignmentDAO.deleteListPositionsEntryFile( nIdTask, autoAssignmentPlugin );
-        _taskAutomaticAssignmentDAO.delete( nIdTask, autoAssignmentPlugin );
+        _workgroupConfigService.removeByTask( nIdTask, WorkflowUtils.getPlugin(  ) );
+        _taskAutomaticAssignmentDAO.deleteListPositionsEntryFile( nIdTask );
+        super.remove( nIdTask );
     }
 
     // Finders
@@ -140,19 +150,16 @@ public class TaskAutomaticAssignmentConfigService implements ITaskAutomaticAssig
      * {@inheritDoc}
      */
     @Override
-    @Transactional( "workflow-automaticassignment.transactionManager" )
-    public TaskAutomaticAssignmentConfig findByPrimaryKey( int nIdTask, Plugin autoAssignmentPlugin,
-        Plugin workflowPlugin )
+    public <T> T findByPrimaryKey( int nIdTask )
     {
-        TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentDAO.load( nIdTask, autoAssignmentPlugin );
+        TaskAutomaticAssignmentConfig config = super.findByPrimaryKey( nIdTask );
 
         if ( config != null )
         {
-            config.setWorkgroups( _workgroupConfigService.getListByConfig( nIdTask, workflowPlugin ) );
-            config.setListPositionsEntryFile( _taskAutomaticAssignmentDAO.loadListPositionsEntryFile( nIdTask,
-                    autoAssignmentPlugin ) );
+            config.setWorkgroups( _workgroupConfigService.getListByConfig( nIdTask, WorkflowUtils.getPlugin(  ) ) );
+            config.setListPositionsEntryFile( _taskAutomaticAssignmentDAO.loadListPositionsEntryFile( nIdTask ) );
         }
 
-        return config;
+        return (T) config;
     }
 }

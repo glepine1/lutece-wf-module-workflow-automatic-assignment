@@ -33,7 +33,9 @@
  */
 package fr.paris.lutece.plugins.workflow.modules.automaticassignment.service;
 
+import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation;
+import fr.paris.lutece.portal.service.plugin.PluginService;
 
 
 /**
@@ -44,4 +46,14 @@ import fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation;
 public class AutomaticAssignmentPlugin extends PluginDefaultImplementation
 {
     public static final String PLUGIN_NAME = "workflow-automaticassignment";
+    public static final String BEAN_TRANSACTION_MANAGER = "workflow-automaticassignment.transactionManager";
+
+    /**
+     * Get the plugin
+     * @return the plugin
+     */
+    public static Plugin getPlugin(  )
+    {
+        return PluginService.getPlugin( PLUGIN_NAME );
+    }
 }
