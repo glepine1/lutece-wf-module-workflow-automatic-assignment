@@ -68,10 +68,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import javax.servlet.http.HttpServletRequest;
 
 
@@ -307,9 +307,9 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
     {
         Plugin directoryPlugin = PluginService.getPlugin( DirectoryPlugin.PLUGIN_NAME );
 
-        HashMap<String, Object> model = new HashMap<String, Object>(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         ReferenceList directoryRefList = DirectoryHome.getDirectoryList( directoryPlugin );
-        List<HashMap<String, Object>> listWorkgroups = new ArrayList<HashMap<String, Object>>(  );
+        List<Map<String, Object>> listWorkgroups = new ArrayList<Map<String, Object>>(  );
         String strNothing = StringUtils.EMPTY;
 
         TaskAutomaticAssignmentConfig config = _taskAutomaticAssignmentConfigService.findByPrimaryKey( task.getId(  ) );
@@ -322,7 +322,7 @@ public class AutomaticAssignmentTaskComponent extends NoFormTaskComponent
 
         for ( AdminWorkgroup workgroup : AdminWorkgroupHome.findAll(  ) )
         {
-            HashMap<String, Object> workgroupsItem = new HashMap<String, Object>(  );
+            Map<String, Object> workgroupsItem = new HashMap<String, Object>(  );
             workgroupsItem.put( MARK_ITEM, workgroup );
 
             if ( ( config != null ) && ( config.getWorkgroups(  ) != null ) )
