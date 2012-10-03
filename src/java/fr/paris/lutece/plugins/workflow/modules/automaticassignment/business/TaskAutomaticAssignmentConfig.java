@@ -66,6 +66,7 @@ public class TaskAutomaticAssignmentConfig extends TaskConfig
     private String _strRecipientsCc;
     private String _strRecipientsBcc;
     private List<Integer> _listPositionsEntryFile;
+    private List<AutomaticAssignment> _listAutomaticAssignments;
 
     /**
      * Get the id directory
@@ -299,5 +300,21 @@ public class TaskAutomaticAssignmentConfig extends TaskConfig
     public List<Integer> getListPositionsEntryFile(  )
     {
         return _listPositionsEntryFile;
+    }
+
+    /**
+     * @return the listAutomaticAssignments
+     */
+    public List<AutomaticAssignment> getListAutomaticAssignments(  )
+    {
+        return _listAutomaticAssignments;
+    }
+
+    /**
+     * @param listAutomaticAssignments the listAutomaticAssignments to set
+     */
+    public void setListAutomaticAssignments( List<AutomaticAssignment> listAutomaticAssignments )
+    {
+        _listAutomaticAssignments = listAutomaticAssignments;
     }
 }

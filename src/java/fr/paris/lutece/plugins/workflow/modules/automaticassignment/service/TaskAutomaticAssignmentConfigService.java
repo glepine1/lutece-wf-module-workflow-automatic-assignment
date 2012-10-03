@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.workflow.modules.automaticassignment.service;
 
 import fr.paris.lutece.plugins.workflow.modules.assignment.business.WorkgroupConfig;
 import fr.paris.lutece.plugins.workflow.modules.assignment.service.IWorkgroupConfigService;
+import fr.paris.lutece.plugins.workflow.modules.automaticassignment.business.AutomaticAssignment;
 import fr.paris.lutece.plugins.workflow.modules.automaticassignment.business.ITaskAutomaticAssignmentConfigDAO;
 import fr.paris.lutece.plugins.workflow.modules.automaticassignment.business.TaskAutomaticAssignmentConfig;
 import fr.paris.lutece.plugins.workflow.utils.WorkflowUtils;
@@ -55,11 +56,14 @@ import javax.inject.Inject;
  */
 public class TaskAutomaticAssignmentConfigService extends TaskConfigService
 {
+    /** The Constant BEAN_SERVICE. */
     public static final String BEAN_SERVICE = "workflow-automaticassignment.taskAutomaticAssignmentConfigService";
     @Inject
     private IWorkgroupConfigService _workgroupConfigService;
     @Inject
     private ITaskAutomaticAssignmentConfigDAO _taskAutomaticAssignmentDAO;
+    @Inject
+    private IAutomaticAssignmentService _automaticAssignmentService;
 
     /**
      * {@inheritDoc}
@@ -80,6 +84,8 @@ public class TaskAutomaticAssignmentConfigService extends TaskConfigService
             {
                 for ( WorkgroupConfig workgroupConfig : listWorkgroups )
                 {
+                    // Workaround in case of task duplication
+                    workgroupConfig.setIdTask( config.getIdTask(  ) );
                     _workgroupConfigService.create( workgroupConfig, WorkflowUtils.getPlugin(  ) );
                 }
             }
@@ -89,6 +95,20 @@ public class TaskAutomaticAssignmentConfigService extends TaskConfigService
                 for ( Integer nPositionEntryFile : autoAssignConfig.getListPositionsEntryFile(  ) )
                 {
                     _taskAutomaticAssignmentDAO.insertListPositionsEntryFile( config.getIdTask(  ), nPositionEntryFile );
+                }
+            }
+
+            if ( autoAssignConfig.getListAutomaticAssignments(  ) != null )
+            {
+                for ( AutomaticAssignment autoAssignment : autoAssignConfig.getListAutomaticAssignments(  ) )
+                {
+                    autoAssignment.setIdTask( config.getIdTask(  ) );
+
+                    if ( !_automaticAssignmentService.checkExist( autoAssignment,
+                                AutomaticAssignmentPlugin.getPlugin(  ) ) )
+                    {
+                        _automaticAssignmentService.create( autoAssignment, AutomaticAssignmentPlugin.getPlugin(  ) );
+                    }
                 }
             }
         }
@@ -129,6 +149,22 @@ public class TaskAutomaticAssignmentConfigService extends TaskConfigService
                     _taskAutomaticAssignmentDAO.insertListPositionsEntryFile( config.getIdTask(  ), nPositionEntryFile );
                 }
             }
+
+            _automaticAssignmentService.removeByTask( config.getIdTask(  ), AutomaticAssignmentPlugin.getPlugin(  ) );
+
+            if ( autoAssignConfig.getListAutomaticAssignments(  ) != null )
+            {
+                for ( AutomaticAssignment autoAssignment : autoAssignConfig.getListAutomaticAssignments(  ) )
+                {
+                    autoAssignment.setIdTask( config.getIdTask(  ) );
+
+                    if ( !_automaticAssignmentService.checkExist( autoAssignment,
+                                AutomaticAssignmentPlugin.getPlugin(  ) ) )
+                    {
+                        _automaticAssignmentService.create( autoAssignment, AutomaticAssignmentPlugin.getPlugin(  ) );
+                    }
+                }
+            }
         }
     }
 
@@ -141,6 +177,7 @@ public class TaskAutomaticAssignmentConfigService extends TaskConfigService
     {
         _workgroupConfigService.removeByTask( nIdTask, WorkflowUtils.getPlugin(  ) );
         _taskAutomaticAssignmentDAO.deleteListPositionsEntryFile( nIdTask );
+        _automaticAssignmentService.removeByTask( nIdTask, AutomaticAssignmentPlugin.getPlugin(  ) );
         super.remove( nIdTask );
     }
 
@@ -158,6 +195,8 @@ public class TaskAutomaticAssignmentConfigService extends TaskConfigService
         {
             config.setWorkgroups( _workgroupConfigService.getListByConfig( nIdTask, WorkflowUtils.getPlugin(  ) ) );
             config.setListPositionsEntryFile( _taskAutomaticAssignmentDAO.loadListPositionsEntryFile( nIdTask ) );
+            config.setListAutomaticAssignments( _automaticAssignmentService.findByTask( nIdTask,
+                    AutomaticAssignmentPlugin.getPlugin(  ) ) );
         }
 
         return (T) config;
