@@ -343,7 +343,7 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
         // Notify the mailings list associated to each workgroup
         for ( String workGroup : listWorkgroup )
         {
-            //add history 
+            //add history
             AssignmentHistory history = new AssignmentHistory(  );
             history.setIdResourceHistory( resourceHistory.getId(  ) );
             history.setIdTask( task.getId(  ) );
@@ -553,7 +553,7 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
     private List<FileAttachment> getListFileAttachments( TaskAutomaticAssignmentConfig config,
         ResourceHistory resourceHistory )
     {
-        return this.getFilesAttachment( config, resourceHistory.getIdResource(  ), config.getIdDirectory(  ) );
+        return getFilesAttachment( config, resourceHistory.getIdResource(  ), config.getIdDirectory(  ) );
     }
 
     /**
@@ -583,7 +583,9 @@ public final class AutomaticAssignmentService implements IAutomaticAssignmentSer
                                             .convertRecordFieldValueToString( recordField, locale, false, false );
 
             if ( recordField.getEntry(  ) instanceof fr.paris.lutece.plugins.directory.business.EntryTypeGeolocation &&
-                    !recordField.getField(  ).getTitle(  ).equals( EntryTypeGeolocation.CONSTANT_ADDRESS ) )
+                    ( ( recordField.getField(  ) == null ) ||
+                    StringUtils.isBlank( recordField.getField(  ).getTitle(  ) ) ||
+                    !EntryTypeGeolocation.CONSTANT_ADDRESS.equals( recordField.getField(  ).getTitle(  ) ) ) )
             {
                 continue;
             }
