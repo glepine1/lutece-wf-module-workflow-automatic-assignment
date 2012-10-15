@@ -6,7 +6,7 @@
 		<#if entry??>
 		<input type="hidden" name="id_entry" value="${entry.idEntry}" />
 	 	<div>
-	 		<label for="value"> #i18n{module.workflow.automaticassignment.modify_entry_assignment.label.value}: </label>		 	
+	 		<label for="value"> #i18n{module.workflow.automaticassignment.modify_entry_assignment.label.entry_value} ${entry.title} : </label>		 	
 		 	<select name="value" id="value">
 				<#list entry.fields as field>
 					<option  value="${field.idField}">
@@ -25,6 +25,8 @@
 			</select>
 			
 			<input type="submit" value="#i18n{module.workflow.automaticassignment.modify_entry_assignment.add_button}" />
+			<br />
+			#i18n{module.workflow.automaticassignment.modify_entry_assignment.label.comment}
 			<br /> <br />
 			<table>
 				<tr>
