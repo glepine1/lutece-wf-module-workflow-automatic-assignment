@@ -1,275 +1,282 @@
 <#include "/admin/util/editor/editor.html" />
 
 <#function isSelected entry default_values >
-	<#if default_values?has_content>
-		<#list default_values as default_value>
-			<#if default_value=entry>  		
-  				<#return true>
-  			</#if>
-  		</#list>
-	</#if>
+    <#if default_values?has_content>
+        <#list default_values as default_value>
+            <#if default_value=entry>       
+                <#return true>
+            </#if>
+        </#list>
+    </#if>
  <#return false>
 </#function>
 
 <div>
-	<h2> #i18n{module.workflow.automaticassignment.task_config.title}</h2> 	
-	  	<p>
-	    	<label for="title">#i18n{module.workflow.automaticassignment.task_config.label_title} * :</label>
-	    		<#if config?exists && config.title??>
-		     			  <input type="text" name="title" id="" size="80" value="${config.title}"  maxlength="255"/>
-		     	<#else>
-		     			<input type="text" name="title" id="" size="80" value=""  maxlength="255"/>
-		     	</#if>	
-		    <br/>
-			<label>&nbsp;</label>
-			#i18n{module.workflow.automaticassignment.task_config.label_title}
-		</p>
-		
-		<p>
-			 <label for="directory">#i18n{module.workflow.automaticassignment.task_config.label_directory} :</label>
-   		 		<@combo 'directory' config.idDirectory directory_list />
-   		 		<input class="button" type="submit" name="apply" value="#i18n{module.workflow.automaticassignment.task_config.update_button}" />	
-   				<br/>
- 			 <label>&nbsp;</label> #i18n{module.workflow.automaticassignment.task_config.label_directory_comment}
-	 	</p>
-	 	<p>
-	 		#i18n{module.workflow.automaticassignment.task_config.label_directory_comment_assign}
-	 	</p>
-	 	<#if config??>	
-	 		<#if config.entryList??>
-	 			<div class="highlight-box">
-	 				<h2>#i18n{module.workflow.automaticassignment.task_config.entry_list.title}</h2>
-	 				<#if config.entryList?size = 0>
-	 					#i18n{module.workflow.automaticassignment.task_config.entry_list.label.noentry}
-	 				<#else>	 				
-		 				<table>
-							<tr>
-								<th>#i18n{module.workflow.automaticassignment.task_config.label.entry}</th>						
-								<th>#i18n{module.workflow.automaticassignment.task_config.label.actions}</th>
-							</tr>
-			 				<#list config.entryList as entry>
-							 	<tr>
-							 		<td>${entry.title}</td>							 		
-							 		<td>	
-							 			<a href="jsp/admin/plugins/workflow/modules/automaticassignment/ModifyEntryAssignment.jsp?id_task=${config.idTask}&id_entry=${entry.idEntry}" > 
-							 				<img src="images/admin/skin/actions/modify.png" class="icon" alt="" title="" /> 
-							 			</a>
-							 		</td>
-						 		</tr>
-						 	</#list>						 	
-					 	</table>
-					</#if>		
-				 	<br />	<br />				 			
-			 	</div>		 
-		 	</#if>
-	 	</#if>	 	
-	 	<p>
-	 		<label for="is_notify">#i18n{module.workflow.automaticassignment.task_config.label_notification} :</label>
-	 		<#if config?exists && config.notify>
-	 			<input type="checkbox" name="is_notify" value="1" checked="checked" onclick="javascript:notification();" />
-   		 	<#else>
-   		 		<input type="checkbox" name="is_notify" value="1" onclick="javascript:notification();" />
-   		 	</#if>
-   			<br />
-		</p>
-		<div id="notification">
-	    	<p>
-	    		<label for="">#i18n{module.workflow.automaticassignment.task_config.label_mapping_workgroup_mailing_list} :</label>
-	    		<#assign is_first = true>
-				<#list workgroup_list as workgroup>
-					<#if !is_first>
-		    			<label for="">&nbsp;</label>
-		    		<#else>
-		    			<#assign is_first = false>
-		    		</#if>
-					<input type="checkbox" class="checkbox" name="workgroups" value="${workgroup.item.key}"
-						<#if workgroup.config?exists> checked="checked" </#if> />
-					${workgroup.item.description}
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					#i18n{module.workflow.assignment.task_assignment_config.label_notification} :
-					<#if workgroup.config?exists>
-						<@comboSorted name="id_mailing_list_${workgroup.item.key}" items=mailing_list default_value=workgroup.config.idMailingList />
-					<#else>
-						<@comboSorted name="id_mailing_list_${workgroup.item.key}" items=mailing_list default_value="-1" />
-					</#if>
-					<br />
-		   		</#list>
-   			</p>
-		 	<p>
-				 <label for="sender_name">#i18n{module.workflow.automaticassignment.task_config.label_user_name} * :</label>
-	   		 		<#if config?exists&&config.senderName?exists>
-	   		 			<input type="text" name="sender_name" id="" size="80" value="${config.senderName}" maxlength="255" />
-	   		 		<#else>
-	   		 			<input type="text" name="sender_name" id="" size="80" value="" maxlength="255" />
-	   		 		</#if>
-	   				<br/>
-	   				 <label>&nbsp;</label>
-				#i18n{module.workflow.automaticassignment.task_config.label_user_name_comment}
-		 	</p>
-		 	<p>
-				<label for="recipients_cc">#i18n{module.workflow.automaticassignment.task_config.label_recipients_cc} :</label>
-				<#if config?exists && config.recipientsCc?has_content>
-			    	<input type="text" name="recipients_cc" id="" size="80" value="${config.recipientsCc}"  maxlength="255"/>
-			    <#else>
-			    	<input type="text" name="recipients_cc" id="" size="80" value="" maxlength="255"/>
-			    </#if>
-			    <br/>
-				<label>&nbsp;</label>
-				#i18n{module.workflow.automaticassignment.task_config.label_recipients_cc_comment}
-			</p>
-			
-			<p>
-				<label for="recipients_bcc">#i18n{module.workflow.automaticassignment.task_config.label_recipients_bcc} :</label>
-				<#if config?exists && config.recipientsBcc?has_content>
-			    	<input type="text" name="recipients_bcc" id="" size="80" value="${config.recipientsBcc}"  maxlength="255"/>
-			    <#else>
-			    	<input type="text" name="recipients_bcc" id="" size="80" value="" maxlength="255"/>
-			    </#if>
-			    <br/>
-				<label>&nbsp;</label>
-				#i18n{module.workflow.automaticassignment.task_config.label_recipients_bcc_comment}
-			</p>
-		 	<p>
-		    	<label for="suject">#i18n{module.workflow.assignment.task_assignment_config.label_subject} * :</label>
-			    	<#if config?exists&&config.subject?exists>
-			     			<input type="text" name="subject" id="" size="80" value="${config.subject}"  maxlength="255"/>
-			     	<#else>
-			     			<input type="text" name="subject" id="" size="80" value=""  maxlength="255"/>
-			     	</#if>		
-				   <br/>
-				  <label>&nbsp;</label>
-				#i18n{module.workflow.assignment.task_assignment_config.label_subject_comment}
-			</p>
-		 	<p>
-		    	<label for="message">#i18n{module.workflow.assignment.task_assignment_config.label_message} * :</label>
-		    		<div class="editor">
-				    	<#if config?exists && config.message?exists>
-							<textarea name="message" id="" rows="5" cols="80" class="richtext">${config.message}</textarea>
-				     	<#else>
-				     		<textarea name="message" id="" rows="5" cols="80" class="richtext"></textarea>
-				     	</#if>		
-					</div>
-				   <br/>
-				  <label>&nbsp;</label>
-				#i18n{module.workflow.assignment.task_assignment_config.label_message_comment}
-			</p>
-			<#if full_entry_list??>
-		 		<div class="highlight-box">
-		 			<h2>#i18n{module.workflow.automaticassignment.task_config.full_entry_list.title}</h2>
-		 			<#if full_entry_list?size = 0>
-		 					#i18n{module.workflow.automaticassignment.task_config.entry_list.label.noentry}
-	 				<#else>	 				
-		 				<table>
-							<tr>
-								<th>#i18n{module.workflow.automaticassignment.task_config.label.entry}</th>						
-								<th>#i18n{module.workflow.automaticassignment.task_config.label.freemarker}</th>
-								
-							</tr>
-			 				<#list full_entry_list as entry>
-			 					<#if entry?? && entry.title??>
-								 	<tr>
-								 		<td>${entry.title}</td>
-								 		<td>&#36;&#123;entry_${entry.idEntry}&#125;</td>							 		
-							 		</tr>
-						 		</#if>
-						 	</#list>
-					 	</table>
-					</#if>
-				 	<br />
-				 	<br />
-		 		</div>
-		 	</#if>
-		 	<#if list_entries_file?? && list_entries_file?has_content>
-		 		<div class="highlight-box">
-		 			<h2>#i18n{module.workflow.automaticassignment.task_config.label_entry_file}</h2>
-		 			<table>
-				  		<tr>
-				  			<th>#i18n{module.workflow.automaticassignment.task_config.label_file_checked}</th>
-				  			<th>#i18n{module.workflow.automaticassignment.task_config.label_file_name}</th>
-				  		</tr>
-					 	<#list list_entries_file as entry>
-						  	<tr>
-						  		<td>
-						  			<input type="checkbox" id="list_position_entry_file_checked" name="list_position_entry_file_checked" value="${entry.position}"
-						  				<#if ( config.listPositionsEntryFile?? && config.listPositionsEntryFile?has_content && isSelected( entry.position, config.listPositionsEntryFile ))>
-											checked="checked" 
-										</#if>
-						  			 />
-						  		</td>
-						  		<td>
-						  			${entry.title}
-						  		</td>
-						  	</tr>
-						  </#list>
-					</table>
-		 		</div>
-			</#if>
-		 	<p>
-				<label for="view_record">#i18n{module.workflow.automaticassignment.task_config.label_view_record} :</label>
-				<input type="checkbox" name="view_record" id="view_record" value="1" 
-					<#if config?exists && config.viewRecord>
-						checked="checked"
-					</#if>	
-				/>
-			    <br/>
-			    <label>&nbsp;</label>
-				#i18n{module.workflow.automaticassignment.task_config.label_view_record_comment}
-			</p>
-			<div id="record">
-				<p>
-					<label>&nbsp;</label>
-					#i18n{module.workflow.automaticassignment.task_config.label_freemarker_link_view_record}
-				</p>
-				<p>
-			    	<label for="label_link_view_record">#i18n{module.workflow.automaticassignment.task_config.label_label_link_view_record} * :</label>
-			    	<#if config?exists && config.labelLinkViewRecord?has_content>
-		     			<input type="text" name="label_link_view_record" id="" size="80" value="${config.labelLinkViewRecord}" maxlength="255"/>
-			     	<#else>
-		     			<input type="text" name="label_link_view_record" id="" size="80" value=""  maxlength="255"/>
-			     	</#if>		
-				   	<br/>
-					<label>&nbsp;</label>
-					#i18n{module.workflow.automaticassignment.task_config.label_label_link_view_record_comment}
-				</p>
-			</div>
-		</div>
+    <h2> #i18n{module.workflow.automaticassignment.task_config.title}</h2>  
+        <p>
+            <label for="title">#i18n{module.workflow.automaticassignment.task_config.label_title} * :</label>
+                <#if config?exists && config.title??>
+                          <input type="text" name="title" id="" size="80" value="${config.title}"  maxlength="255"/>
+                <#else>
+                        <input type="text" name="title" id="" size="80" value=""  maxlength="255"/>
+                </#if>
+            <br/>
+            <label>&nbsp;</label>
+            #i18n{module.workflow.automaticassignment.task_config.label_title}
+        </p>
+        
+        <p>
+             <label for="directory">#i18n{module.workflow.automaticassignment.task_config.label_directory} :</label>
+                <div class="input-append">
+                    <@combo 'directory' config.idDirectory directory_list />
+                    <button class="btn btn-primary" type="submit" name="apply" title="#i18n{module.workflow.automaticassignment.task_config.update_button}">
+                        <i class="icon-ok icon-white"></i>
+                    </button>
+                </div>
+             <label>&nbsp;</label> #i18n{module.workflow.automaticassignment.task_config.label_directory_comment}
+        </p>
+        <p>
+            #i18n{module.workflow.automaticassignment.task_config.label_directory_comment_assign}
+        </p>
+        <#if config??>  
+            <#if config.entryList??>
+                <div class="highlight-box">
+                    <h2>#i18n{module.workflow.automaticassignment.task_config.entry_list.title}</h2>
+                    <#if config.entryList?size = 0>
+                        #i18n{module.workflow.automaticassignment.task_config.entry_list.label.noentry}
+                    <#else>                 
+                        <table>
+                            <tr>
+                                <th>#i18n{module.workflow.automaticassignment.task_config.label.entry}</th>                     
+                                <th>#i18n{module.workflow.automaticassignment.task_config.label.actions}</th>
+                            </tr>
+                            <#list config.entryList as entry>
+                                <tr>
+                                    <td>${entry.title}</td>                                 
+                                    <td>    
+                                        <a href="jsp/admin/plugins/workflow/modules/automaticassignment/ModifyEntryAssignment.jsp?id_task=${config.idTask}&id_entry=${entry.idEntry}" > 
+                                            <img src="images/admin/skin/actions/modify.png" class="icon" alt="" title="" /> 
+                                        </a>
+                                    </td>
+                                </tr>
+                            </#list>                            
+                        </table>
+                    </#if>      
+                    <br />  <br />                          
+                </div>       
+            </#if>
+        </#if>      
+        <p>
+            <label for="is_notify">#i18n{module.workflow.automaticassignment.task_config.label_notification} :</label>
+            <#if config?exists && config.notify>
+                <input type="checkbox" name="is_notify" value="1" checked="checked" onclick="javascript:notification();" />
+            <#else>
+                <input type="checkbox" name="is_notify" value="1" onclick="javascript:notification();" />
+            </#if>
+            <br />
+        </p>
+        <div id="notification">
+            <p>
+                <label for="">#i18n{module.workflow.automaticassignment.task_config.label_mapping_workgroup_mailing_list} :</label>
+                <#if workgroup_list?has_content>
+                    <#assign is_first = true>
+                    <#list workgroup_list as workgroup>
+                        <#if !is_first>
+                            <label for="">&nbsp;</label>
+                        <#else>
+                            <#assign is_first = false>
+                        </#if>
+                        <input type="checkbox" class="checkbox" name="workgroups" value="${workgroup.item.key}"
+                            <#if workgroup.config?exists> checked="checked" </#if> />
+                        ${workgroup.item.description}
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        #i18n{module.workflow.assignment.task_assignment_config.label_notification} :
+                        <#if workgroup.config?exists>
+                            <@comboSorted name="id_mailing_list_${workgroup.item.key}" items=mailing_list default_value=workgroup.config.idMailingList />
+                        <#else>
+                            <@comboSorted name="id_mailing_list_${workgroup.item.key}" items=mailing_list default_value="-1" />
+                        </#if>
+                        <br />
+                    </#list>
+                <#else>
+                   #i18n{module.workflow.automaticassignment.task_config.no_working_group}
+                </#if>
+            </p>
+            <p>
+                 <label for="sender_name">#i18n{module.workflow.automaticassignment.task_config.label_user_name} * :</label>
+                    <#if config?exists&&config.senderName?exists>
+                        <input type="text" name="sender_name" id="" size="80" value="${config.senderName}" maxlength="255" />
+                    <#else>
+                        <input type="text" name="sender_name" id="" size="80" value="" maxlength="255" />
+                    </#if>
+                    <br/>
+                     <label>&nbsp;</label>
+                #i18n{module.workflow.automaticassignment.task_config.label_user_name_comment}
+            </p>
+            <p>
+                <label for="recipients_cc">#i18n{module.workflow.automaticassignment.task_config.label_recipients_cc} :</label>
+                <#if config?exists && config.recipientsCc?has_content>
+                    <input type="text" name="recipients_cc" id="" size="80" value="${config.recipientsCc}"  maxlength="255"/>
+                <#else>
+                    <input type="text" name="recipients_cc" id="" size="80" value="" maxlength="255"/>
+                </#if>
+                <br/>
+                <label>&nbsp;</label>
+                #i18n{module.workflow.automaticassignment.task_config.label_recipients_cc_comment}
+            </p>
+            
+            <p>
+                <label for="recipients_bcc">#i18n{module.workflow.automaticassignment.task_config.label_recipients_bcc} :</label>
+                <#if config?exists && config.recipientsBcc?has_content>
+                    <input type="text" name="recipients_bcc" id="" size="80" value="${config.recipientsBcc}"  maxlength="255"/>
+                <#else>
+                    <input type="text" name="recipients_bcc" id="" size="80" value="" maxlength="255"/>
+                </#if>
+                <br/>
+                <label>&nbsp;</label>
+                #i18n{module.workflow.automaticassignment.task_config.label_recipients_bcc_comment}
+            </p>
+            <p>
+                <label for="suject">#i18n{module.workflow.assignment.task_assignment_config.label_subject} * :</label>
+                    <#if config?exists&&config.subject?exists>
+                            <input type="text" name="subject" id="" size="80" value="${config.subject}"  maxlength="255"/>
+                    <#else>
+                            <input type="text" name="subject" id="" size="80" value=""  maxlength="255"/>
+                    </#if>      
+                   <br/>
+                  <label>&nbsp;</label>
+                #i18n{module.workflow.assignment.task_assignment_config.label_subject_comment}
+            </p>
+            <p>
+                <label for="message">#i18n{module.workflow.assignment.task_assignment_config.label_message} * :</label>
+                    <div class="editor">
+                        <#if config?exists && config.message?exists>
+                            <textarea name="message" id="" rows="5" cols="80" class="richtext">${config.message}</textarea>
+                        <#else>
+                            <textarea name="message" id="" rows="5" cols="80" class="richtext"></textarea>
+                        </#if>      
+                    </div>
+                   <br/>
+                  <label>&nbsp;</label>
+                #i18n{module.workflow.assignment.task_assignment_config.label_message_comment}
+            </p>
+            <#if full_entry_list??>
+                <div class="highlight-box">
+                    <h2>#i18n{module.workflow.automaticassignment.task_config.full_entry_list.title}</h2>
+                    <#if full_entry_list?size = 0>
+                            #i18n{module.workflow.automaticassignment.task_config.entry_list.label.noentry}
+                    <#else>                 
+                        <table>
+                            <tr>
+                                <th>#i18n{module.workflow.automaticassignment.task_config.label.entry}</th>                     
+                                <th>#i18n{module.workflow.automaticassignment.task_config.label.freemarker}</th>
+                                
+                            </tr>
+                            <#list full_entry_list as entry>
+                                <#if entry?? && entry.title??>
+                                    <tr>
+                                        <td>${entry.title}</td>
+                                        <td>&#36;&#123;entry_${entry.idEntry}&#125;</td>                                    
+                                    </tr>
+                                </#if>
+                            </#list>
+                        </table>
+                    </#if>
+                    <br />
+                    <br />
+                </div>
+            </#if>
+            <#if list_entries_file?? && list_entries_file?has_content>
+                <div class="highlight-box">
+                    <h2>#i18n{module.workflow.automaticassignment.task_config.label_entry_file}</h2>
+                    <table>
+                        <tr>
+                            <th>#i18n{module.workflow.automaticassignment.task_config.label_file_checked}</th>
+                            <th>#i18n{module.workflow.automaticassignment.task_config.label_file_name}</th>
+                        </tr>
+                        <#list list_entries_file as entry>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" id="list_position_entry_file_checked" name="list_position_entry_file_checked" value="${entry.position}"
+                                        <#if ( config.listPositionsEntryFile?? && config.listPositionsEntryFile?has_content && isSelected( entry.position, config.listPositionsEntryFile ))>
+                                            checked="checked" 
+                                        </#if>
+                                     />
+                                </td>
+                                <td>
+                                    ${entry.title}
+                                </td>
+                            </tr>
+                          </#list>
+                    </table>
+                </div>
+            </#if>
+            <p>
+                <label for="view_record">#i18n{module.workflow.automaticassignment.task_config.label_view_record} :</label>
+                <input type="checkbox" name="view_record" id="view_record" value="1" 
+                    <#if config?exists && config.viewRecord>
+                        checked="checked"
+                    </#if>  
+                />
+                <br/>
+                <label>&nbsp;</label>
+                #i18n{module.workflow.automaticassignment.task_config.label_view_record_comment}
+            </p>
+            <div id="record">
+                <p>
+                    <label>&nbsp;</label>
+                    #i18n{module.workflow.automaticassignment.task_config.label_freemarker_link_view_record}
+                </p>
+                <p>
+                    <label for="label_link_view_record">#i18n{module.workflow.automaticassignment.task_config.label_label_link_view_record} * :</label>
+                    <#if config?exists && config.labelLinkViewRecord?has_content>
+                        <input type="text" name="label_link_view_record" id="" size="80" value="${config.labelLinkViewRecord}" maxlength="255"/>
+                    <#else>
+                        <input type="text" name="label_link_view_record" id="" size="80" value=""  maxlength="255"/>
+                    </#if>      
+                    <br/>
+                    <label>&nbsp;</label>
+                    #i18n{module.workflow.automaticassignment.task_config.label_label_link_view_record_comment}
+                </p>
+            </div>
+        </div>
 </div>
 <script type="text/javascript" charset="utf-8">
-	function notification()
-	{
-		var notif = document.getElementsByName("is_notify");
+    function notification()
+    {
+        var notif = document.getElementsByName("is_notify");
 
-		if(notif[0].checked)
-		{
-			document.getElementById("notification").style.display = "block";
-			<#-- <#list workgroup_list as workgroup>
-				if(document.getElementById("div_${workgroup.item.code}"))
-				{
-					document.getElementById("div_${workgroup.item.code}").style.display = "block";
-				}
-			</#list> -->
-		}
-		else
-		{
-			document.getElementById("notification").style.display = "none";
-			<#-- <#list workgroup_list as workgroup>
-				if(document.getElementById("div_${workgroup.item.code}"))
-				{
-					document.getElementById("div_${workgroup.item.code}").style.display = "none";
-				}
-			</#list> -->
-		}
-	}
-	notification();
-	
-	$( document ).ready( function(  ) {
-		if ( !$( '#view_record' ).is( ':checked' ) ) {
-			$( '#record' ).hide(  );
-		}
-		$( '#view_record' ).click( function(  ) {
-			$( '#record' ).toggle(  $( this ).is( ':checked' ) );
-		} );
-	} );
+        if(notif[0].checked)
+        {
+            document.getElementById("notification").style.display = "block";
+            <#-- <#list workgroup_list as workgroup>
+                if(document.getElementById("div_${workgroup.item.code}"))
+                {
+                    document.getElementById("div_${workgroup.item.code}").style.display = "block";
+                }
+            </#list> -->
+        }
+        else
+        {
+            document.getElementById("notification").style.display = "none";
+            <#-- <#list workgroup_list as workgroup>
+                if(document.getElementById("div_${workgroup.item.code}"))
+                {
+                    document.getElementById("div_${workgroup.item.code}").style.display = "none";
+                }
+            </#list> -->
+        }
+    }
+    notification();
+    
+    $( document ).ready( function(  ) {
+        if ( !$( '#view_record' ).is( ':checked' ) ) {
+            $( '#record' ).hide(  );
+        }
+        $( '#view_record' ).click( function(  ) {
+            $( '#record' ).toggle(  $( this ).is( ':checked' ) );
+        } );
+    } );
 </script>
 
 <@initEditor />
