@@ -1,4 +1,5 @@
 <#include "/admin/util/editor/editor.html" />
+<link href="css/plugins/workflow/modules/automaticassignment/automaticassignment.css" rel="stylesheet"/>
 
 <#function isSelected entry default_values >
     <#if default_values?has_content>
@@ -12,32 +13,33 @@
 </#function>
 
 <div>
-    <h2> #i18n{module.workflow.automaticassignment.task_config.title}</h2>  
-        <p>
-            <label for="title">#i18n{module.workflow.automaticassignment.task_config.label_title} * :</label>
+    <h2> #i18n{module.workflow.automaticassignment.task_config.title}</h2>
+        <div class="control-group">
+            <label class="control-label text-left label-medium" for="title">#i18n{module.workflow.automaticassignment.task_config.label_title} * :</label> 
+            <div class="controls">
                 <#if config?exists && config.title??>
                           <input type="text" name="title" id="" size="80" value="${config.title}"  maxlength="255"/>
                 <#else>
                         <input type="text" name="title" id="" size="80" value=""  maxlength="255"/>
                 </#if>
-            <br/>
-            <label>&nbsp;</label>
-            #i18n{module.workflow.automaticassignment.task_config.label_title}
-        </p>
+                <span class="help-block">#i18n{module.workflow.automaticassignment.task_config.label_title}</span>
+            </div>
+        </div>
         
-        <p>
-             <label for="directory">#i18n{module.workflow.automaticassignment.task_config.label_directory} :</label>
+        
+        <div class="control-group">
+             <label class="control-label text-left label-medium" for="directory">#i18n{module.workflow.automaticassignment.task_config.label_directory} :</label>
+             <div class="controls">
                 <div class="input-append">
-                    <@combo 'directory' config.idDirectory directory_list />
-                    <button class="btn btn-primary" type="submit" name="apply" title="#i18n{module.workflow.automaticassignment.task_config.update_button}">
-                        <i class="icon-ok icon-white"></i>
-                    </button>
+                      <@combo 'directory' config.idDirectory directory_list />
+                      <button class="btn btn-primary" type="submit" name="apply" title="#i18n{module.workflow.automaticassignment.task_config.update_button}">
+                          <i class="icon-ok icon-white"></i>
+                      </button>
                 </div>
-             <label>&nbsp;</label> #i18n{module.workflow.automaticassignment.task_config.label_directory_comment}
-        </p>
-        <p>
-            #i18n{module.workflow.automaticassignment.task_config.label_directory_comment_assign}
-        </p>
+                <span class="help-block"> #i18n{module.workflow.automaticassignment.task_config.label_directory_comment}</span>
+             </div>
+        </div>
+        <span class="help-block">#i18n{module.workflow.automaticassignment.task_config.label_directory_comment_assign}</span>
         <#if config??>  
             <#if config.entryList??>
                 <div class="highlight-box">
@@ -66,18 +68,20 @@
                 </div>       
             </#if>
         </#if>      
-        <p>
-            <label for="is_notify">#i18n{module.workflow.automaticassignment.task_config.label_notification} :</label>
-            <#if config?exists && config.notify>
-                <input type="checkbox" name="is_notify" value="1" checked="checked" onclick="javascript:notification();" />
-            <#else>
-                <input type="checkbox" name="is_notify" value="1" onclick="javascript:notification();" />
-            </#if>
-            <br />
-        </p>
+        <div class="control-group">
+             <label class="control-label text-left label-large" for="is_notify">#i18n{module.workflow.automaticassignment.task_config.label_notification} :</label>
+             <div class="controls">
+                <#if config?exists && config.notify>
+                    <input type="checkbox" name="is_notify" value="1" checked="checked" onclick="javascript:notification();" />
+                <#else>
+                    <input type="checkbox" name="is_notify" value="1" onclick="javascript:notification();" />
+                </#if>
+            </div>
+        </div>
         <div id="notification">
-            <p>
-                <label for="">#i18n{module.workflow.automaticassignment.task_config.label_mapping_workgroup_mailing_list} :</label>
+            <div class="control-group">
+                <label class="control-label text-left label-large">#i18n{module.workflow.automaticassignment.task_config.label_mapping_workgroup_mailing_list} :</label>
+                 <div class="controls">
                 <#if workgroup_list?has_content>
                     <#assign is_first = true>
                     <#list workgroup_list as workgroup>
@@ -101,54 +105,55 @@
                 <#else>
                    #i18n{module.workflow.automaticassignment.task_config.no_working_group}
                 </#if>
-            </p>
-            <p>
-                 <label for="sender_name">#i18n{module.workflow.automaticassignment.task_config.label_user_name} * :</label>
+                </div>
+            </div>
+            <div class="control-group">
+                 <label class="control-label text-left label-medium" for="sender_name">#i18n{module.workflow.automaticassignment.task_config.label_user_name} * :</label>
+                 <div class="controls">
                     <#if config?exists&&config.senderName?exists>
                         <input type="text" name="sender_name" id="" size="80" value="${config.senderName}" maxlength="255" />
                     <#else>
                         <input type="text" name="sender_name" id="" size="80" value="" maxlength="255" />
                     </#if>
-                    <br/>
-                     <label>&nbsp;</label>
-                #i18n{module.workflow.automaticassignment.task_config.label_user_name_comment}
-            </p>
-            <p>
-                <label for="recipients_cc">#i18n{module.workflow.automaticassignment.task_config.label_recipients_cc} :</label>
+                    <span class="help-block">#i18n{module.workflow.automaticassignment.task_config.label_user_name_comment}</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label text-left label-medium" for="recipients_cc">#i18n{module.workflow.automaticassignment.task_config.label_recipients_cc} :</label>
+                 <div class="controls">
                 <#if config?exists && config.recipientsCc?has_content>
                     <input type="text" name="recipients_cc" id="" size="80" value="${config.recipientsCc}"  maxlength="255"/>
                 <#else>
                     <input type="text" name="recipients_cc" id="" size="80" value="" maxlength="255"/>
                 </#if>
-                <br/>
-                <label>&nbsp;</label>
-                #i18n{module.workflow.automaticassignment.task_config.label_recipients_cc_comment}
-            </p>
-            
-            <p>
-                <label for="recipients_bcc">#i18n{module.workflow.automaticassignment.task_config.label_recipients_bcc} :</label>
+                <span class="help-block">#i18n{module.workflow.automaticassignment.task_config.label_recipients_cc_comment}</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label text-left label-medium" for="recipients_bcc">#i18n{module.workflow.automaticassignment.task_config.label_recipients_bcc} :</label>
+                 <div class="controls">
                 <#if config?exists && config.recipientsBcc?has_content>
                     <input type="text" name="recipients_bcc" id="" size="80" value="${config.recipientsBcc}"  maxlength="255"/>
                 <#else>
                     <input type="text" name="recipients_bcc" id="" size="80" value="" maxlength="255"/>
                 </#if>
-                <br/>
-                <label>&nbsp;</label>
-                #i18n{module.workflow.automaticassignment.task_config.label_recipients_bcc_comment}
-            </p>
-            <p>
-                <label for="suject">#i18n{module.workflow.assignment.task_assignment_config.label_subject} * :</label>
+                <span class="help-block">#i18n{module.workflow.automaticassignment.task_config.label_recipients_bcc_comment}</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label text-left label-medium" for="suject">#i18n{module.workflow.assignment.task_assignment_config.label_subject} * :</label>
+                 <div class="controls">
                     <#if config?exists&&config.subject?exists>
                             <input type="text" name="subject" id="" size="80" value="${config.subject}"  maxlength="255"/>
                     <#else>
                             <input type="text" name="subject" id="" size="80" value=""  maxlength="255"/>
                     </#if>      
-                   <br/>
-                  <label>&nbsp;</label>
-                #i18n{module.workflow.assignment.task_assignment_config.label_subject_comment}
-            </p>
-            <p>
-                <label for="message">#i18n{module.workflow.assignment.task_assignment_config.label_message} * :</label>
+                   <span class="help-block"> #i18n{module.workflow.assignment.task_assignment_config.label_subject_comment}</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label text-left label-medium" for="message">#i18n{module.workflow.assignment.task_assignment_config.label_message} * :</label>
+                 <div class="controls">
                     <div class="editor">
                         <#if config?exists && config.message?exists>
                             <textarea name="message" id="" rows="5" cols="80" class="richtext">${config.message}</textarea>
@@ -156,10 +161,9 @@
                             <textarea name="message" id="" rows="5" cols="80" class="richtext"></textarea>
                         </#if>      
                     </div>
-                   <br/>
-                  <label>&nbsp;</label>
-                #i18n{module.workflow.assignment.task_assignment_config.label_message_comment}
-            </p>
+                   <span class="help-block">#i18n{module.workflow.assignment.task_assignment_config.label_message_comment}</span>
+                </div>
+            </div>
             <#if full_entry_list??>
                 <div class="highlight-box">
                     <h2>#i18n{module.workflow.automaticassignment.task_config.full_entry_list.title}</h2>
@@ -211,33 +215,33 @@
                     </table>
                 </div>
             </#if>
-            <p>
-                <label for="view_record">#i18n{module.workflow.automaticassignment.task_config.label_view_record} :</label>
-                <input type="checkbox" name="view_record" id="view_record" value="1" 
-                    <#if config?exists && config.viewRecord>
-                        checked="checked"
-                    </#if>  
-                />
-                <br/>
-                <label>&nbsp;</label>
-                #i18n{module.workflow.automaticassignment.task_config.label_view_record_comment}
-            </p>
+            
+            <div class="control-group">
+                 <label class="control-label text-left label-large" for="view_record">#i18n{module.workflow.automaticassignment.task_config.label_notification} :</label>
+                 <div class="controls">
+                    <input type="checkbox" name="view_record" id="view_record" value="1" 
+                        <#if config?exists && config.viewRecord>
+                            checked="checked"
+                        </#if> />
+                <span class="help-block">#i18n{module.workflow.automaticassignment.task_config.label_view_record_comment}</span>
+                </div>
+            </div>
             <div id="record">
                 <p>
                     <label>&nbsp;</label>
                     #i18n{module.workflow.automaticassignment.task_config.label_freemarker_link_view_record}
                 </p>
-                <p>
-                    <label for="label_link_view_record">#i18n{module.workflow.automaticassignment.task_config.label_label_link_view_record} * :</label>
+                <div class="control-group">
+                    <label class="control-label text-left label-large" for="label_link_view_record">#i18n{module.workflow.automaticassignment.task_config.label_label_link_view_record} * :</label>
+                    <div class="controls">
                     <#if config?exists && config.labelLinkViewRecord?has_content>
                         <input type="text" name="label_link_view_record" id="" size="80" value="${config.labelLinkViewRecord}" maxlength="255"/>
                     <#else>
                         <input type="text" name="label_link_view_record" id="" size="80" value=""  maxlength="255"/>
                     </#if>      
-                    <br/>
-                    <label>&nbsp;</label>
-                    #i18n{module.workflow.automaticassignment.task_config.label_label_link_view_record_comment}
-                </p>
+                    <span class="help-block">#i18n{module.workflow.automaticassignment.task_config.label_label_link_view_record_comment}</span>
+                    </div>
+                </div>
             </div>
         </div>
 </div>

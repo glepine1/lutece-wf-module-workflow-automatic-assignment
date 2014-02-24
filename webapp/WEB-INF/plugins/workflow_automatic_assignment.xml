@@ -17,6 +17,12 @@
 		<max-core-version/>	
 	</core-version-dependency>
 	
+    <!-- Specific plugin CSS stylesheet -->
+    <css-stylesheets>
+        <css-stylesheets-scope>portal</css-stylesheets-scope>
+        <css-stylesheet>workflow/modules/automaticassignment/automaticassignment.css</css-stylesheet>
+    </css-stylesheets>
+	
 	<!-- if the plugin must have a connection pool with parameter : 1 - yes, 0 - no -->	
     <db-pool-required>1</db-pool-required>
 </plug-in>
