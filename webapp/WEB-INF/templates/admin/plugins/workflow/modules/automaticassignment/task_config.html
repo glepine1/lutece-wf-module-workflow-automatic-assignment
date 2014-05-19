@@ -32,7 +32,7 @@
              <div class="controls">
                 <div class="input-append">
                       <@combo 'directory' config.idDirectory directory_list />
-                      <button class="btn btn-primary" type="submit" name="apply" title="#i18n{module.workflow.automaticassignment.task_config.update_button}">
+                      <button class="btn btn-primary" type="button" name="apply" title="#i18n{module.workflow.automaticassignment.task_config.update_button}">
                           <i class="icon-ok icon-white"></i>
                       </button>
                 </div>
@@ -56,8 +56,8 @@
                                 <tr>
                                     <td>${entry.title}</td>                                 
                                     <td>    
-                                        <a href="jsp/admin/plugins/workflow/modules/automaticassignment/ModifyEntryAssignment.jsp?id_task=${config.idTask}&id_entry=${entry.idEntry}" > 
-                                            <img src="images/admin/skin/actions/modify.png" class="icon" alt="" title="" /> 
+                                        <a class="btn btn-primary btn-small" href="jsp/admin/plugins/workflow/modules/automaticassignment/ModifyEntryAssignment.jsp?id_task=${config.idTask}&id_entry=${entry.idEntry}" > 
+                                            <i class="icon-edit icon-white"></i>
                                         </a>
                                     </td>
                                 </tr>

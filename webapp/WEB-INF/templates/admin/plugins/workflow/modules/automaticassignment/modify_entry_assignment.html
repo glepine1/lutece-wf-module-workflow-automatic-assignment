@@ -6,7 +6,7 @@
 		<#if entry??>
 		<input type="hidden" name="id_entry" value="${entry.idEntry}" />
 	 	<div>
-	 		<label for="value"> #i18n{module.workflow.automaticassignment.modify_entry_assignment.label.entry_value} ${entry.title} : </label>		 	
+	 		<span> #i18n{module.workflow.automaticassignment.modify_entry_assignment.label.entry_value} ${entry.title} : </span>		 	
 		 	<select name="value" id="value">
 				<#list entry.fields as field>
 					<option  value="${field.idField}">
@@ -15,7 +15,7 @@
 				</#list>
 			</select>
 			
-			<span style="font-weight:bold;color:#395E7D;">#i18n{module.workflow.automaticassignment.modify_entry_assignment.label.workgroups}: </span>
+			<span>#i18n{module.workflow.automaticassignment.modify_entry_assignment.label.workgroups}: </span>
 			<select name="workgroup"  id="workgroup">
 				<#list workgroup_list as workgroup>
 					<option  value="${workgroup.key}">
@@ -24,7 +24,9 @@
 				</#list>
 			</select>
 			
-			<input type="submit" value="#i18n{module.workflow.automaticassignment.modify_entry_assignment.add_button}" />
+			<button type="submit" class="btn btn-primary" >
+				#i18n{module.workflow.automaticassignment.modify_entry_assignment.add_button}
+			</button>
 			<br />
 			#i18n{module.workflow.automaticassignment.modify_entry_assignment.label.comment}
 			<br /> <br />
@@ -40,8 +42,8 @@
 								<td>${assignment.fieldValue}</td>
 								<td>${assignment.workgroupDescription}</td>
 								<td> 
-									<a href="jsp/admin/plugins/workflow/modules/automaticassignment/DeleteAssignment.jsp?workgroup=${assignment.workgroupKey}&value=${assignment.idField}&id_task=${id_task}&id_entry=${entry.idEntry}">
-						            	<img src="images/admin/skin/actions/delete.png" class="icon" alt="" title="" />							
+									<a class="btn btn-danger btn-small" href="jsp/admin/plugins/workflow/modules/automaticassignment/DeleteAssignment.jsp?workgroup=${assignment.workgroupKey}&value=${assignment.idField}&id_task=${id_task}&id_entry=${entry.idEntry}">
+						            	<i class="icon-trash icon-white"></i>						
 						        	</a>
 						        </td>
 					        </tr>
@@ -54,6 +56,8 @@
 	</form>
 	<form action="${url}">
 		<input type="hidden" name="id_task" value="${id_task}" />
-		<input type="submit" value="#i18n{module.workflow.automaticassignment.modify_entry_assignment.back_button}">
+		<button class="btn btn-primary" type="submit">
+			#i18n{module.workflow.automaticassignment.modify_entry_assignment.back_button}
+		</button>
 	</form>
 </div>
