@@ -10,7 +10,7 @@
 	<groupId>fr.paris.lutece.plugins</groupId>
 	<artifactId>module-workflow-automatic-assignment</artifactId>
 	<packaging>lutece-plugin</packaging>
-	<version>2.1.0</version>
+	<version>2.1.1-SNAPSHOT</version>
 	<name>Workflow automatic assignment module</name>
 
 	<repositories>
@@ -49,8 +49,8 @@
         <jiraComponentId>10280</jiraComponentId>
     </properties>
     <scm>
-        <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/portal/tags/module-workflow-automatic-assignment-2.1.0</connection>
-        <developerConnection>scm:svn:https://dev.lutece.paris.fr/svn/lutece/portal/tags/module-workflow-automatic-assignment-2.1.0</developerConnection>
-        <url>http://dev.lutece.paris.fr/viewvc/lutece/portal/tags/module-workflow-automatic-assignment-2.1.0</url>
+        <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/directory-form-workflow/module-workflow-automatic-assignment</connection>
+        <developerConnection>scm:svn:https://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/directory-form-workflow/module-workflow-automatic-assignment</developerConnection>
+        <url>http://dev.lutece.paris.fr/viewvc/lutece/portal/trunk/plugins/directory-form-workflow/module-workflow-automatic-assignment</url>
     </scm>
 </project>
