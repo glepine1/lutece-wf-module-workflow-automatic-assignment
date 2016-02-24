@@ -1,4 +1,3 @@
-
 <div class="content-box">
   <h2>#i18n{module.workflow.automaticassignment.task_config.label.entry} "${entry.title}"</h2> 	
 	<form action="jsp/admin/plugins/workflow/modules/automaticassignment/DoAddAutomaticAssignment.jsp">  	
@@ -7,9 +6,9 @@
 		<input type="hidden" name="id_entry" value="${entry.idEntry}" />
 	 	<div>
 	 		<span> #i18n{module.workflow.automaticassignment.modify_entry_assignment.label.entry_value} ${entry.title} : </span>		 	
-		 	<select name="value" id="value">
+		 	<select name="value" id="value" class="form-control input-sm">
 				<#list entry.fields as field>
-					<option  value="${field.idField}">
+					<option value="${field.idField}">
 						${field.title}
 					</option>
 				</#list>
@@ -24,7 +23,7 @@
 				</#list>
 			</select>
 			
-			<button type="submit" class="btn btn-primary" >
+			<button type="submit" class="btn btn-primary btn-sm">
 				#i18n{module.workflow.automaticassignment.modify_entry_assignment.add_button}
 			</button>
 			<br />
@@ -42,8 +41,8 @@
 								<td>${assignment.fieldValue}</td>
 								<td>${assignment.workgroupDescription}</td>
 								<td> 
-									<a class="btn btn-danger btn-small" href="jsp/admin/plugins/workflow/modules/automaticassignment/DeleteAssignment.jsp?workgroup=${assignment.workgroupKey}&value=${assignment.idField}&id_task=${id_task}&id_entry=${entry.idEntry}">
-						            	<i class="icon-trash icon-white"></i>						
+									<a class="btn btn-danger btn-sm" href="jsp/admin/plugins/workflow/modules/automaticassignment/DeleteAssignment.jsp?workgroup=${assignment.workgroupKey}&value=${assignment.idField}&id_task=${id_task}&id_entry=${entry.idEntry}">
+						            	<i class="glyphicon glyphicon-trash"></i>						
 						        	</a>
 						        </td>
 					        </tr>
@@ -56,7 +55,7 @@
 	</form>
 	<form action="${url}">
 		<input type="hidden" name="id_task" value="${id_task}" />
-		<button class="btn btn-primary" type="submit">
+		<button class="btn btn-primary btn-sm" type="submit">
 			#i18n{module.workflow.automaticassignment.modify_entry_assignment.back_button}
 		</button>
 	</form>
