@@ -33,9 +33,12 @@
  */
 package fr.paris.lutece.plugins.workflow.modules.automaticassignment.service;
 
+import fr.paris.lutece.plugins.directory.business.Field;
+import fr.paris.lutece.plugins.directory.business.IEntry;
 import fr.paris.lutece.plugins.directory.business.RecordField;
 import fr.paris.lutece.plugins.directory.business.RecordFieldHome;
 import fr.paris.lutece.plugins.directory.service.DirectoryPlugin;
+import fr.paris.lutece.plugins.directory.utils.DirectoryUtils;
 import fr.paris.lutece.plugins.workflow.modules.assignment.service.IAssignmentHistoryService;
 import fr.paris.lutece.plugins.workflow.modules.assignment.service.IWorkgroupConfigService;
 import fr.paris.lutece.plugins.workflow.modules.automaticassignment.business.AutomaticAssignment;
@@ -55,6 +58,7 @@ import org.apache.commons.lang.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -99,10 +103,22 @@ public class TaskAutomaticAssignment extends SimpleTask
         List<AutomaticAssignment> listAssignment = _automaticAssignmentService.findByTask( this.getId(  ),
                 autoAssignPlugin );
 
-        List<Integer> idEntryList = _automaticAssignmentService.findAllIdEntriesByTask( this.getId(  ), autoAssignPlugin );
+        List<AutomaticAssignment> automaticAssignementList = _automaticAssignmentService.findByTask( this.getId(  ), autoAssignPlugin );
+        List<IEntry> entryList = new ArrayList<IEntry>( automaticAssignementList.size( ) );
+        for ( AutomaticAssignment automaticAssignment: automaticAssignementList )
+        {
+            entryList.add(automaticAssignment.getEntry());
+        }
 
+        List<Integer> idEntryList = new ArrayList<Integer>( entryList.size(  ) );
+        for ( IEntry entry : entryList )
+        {
+            idEntryList.add( entry.getIdEntry(  ) );
+        }
+
+        Map<Integer,Field> hashFields=DirectoryUtils.getMapFieldsOfListEntry(entryList,  autoAssignPlugin) ;
         List<RecordField> recordFields = RecordFieldHome.getRecordFieldSpecificList( idEntryList,
-                resourceHistory.getIdResource(  ), directoryPlugin );
+                resourceHistory.getIdResource(  ), directoryPlugin, hashFields );
 
         for ( RecordField recordField : recordFields )
         {
