@@ -104,7 +104,7 @@
 						</div>
                         #i18n{module.workflow.assignment.task_assignment_config.label_notification} :
                         <#if workgroup.config?exists>
-                            <@comboSortedWithParams name="id_mailing_list_${workgroup.item.key}" items=mailing_list default_value=workgroup.config.idMailingList additionalParameters="class='form-control input-sm'" />
+                            <@comboSortedWithParams name="id_mailing_list_${workgroup.item.key}" items=mailing_list default_value="${workgroup.config.idMailingList}" additionalParameters="class='form-control input-sm'" />
                         <#else>
                             <@comboSortedWithParams name="id_mailing_list_${workgroup.item.key}" items=mailing_list default_value="-1" additionalParameters="class='form-control input-sm'" />
                         </#if>
